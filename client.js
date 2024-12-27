@@ -5,14 +5,21 @@ async function makeRequest() {
   const targetServer = "localhost:8000"; // Target server details
 
   try {
-    let response = await axios.get(proxy1, {
-      headers: {
-        Host: targetServer, // Add the Host header for the target server
+    let response = await axios.post(
+      proxy1,
+      {
+        // Data to be sent in the body of the request
+        data: {
+          key1: "value1",
+          key2: "value2",
+        },
       },
-      data: {
-        xx: 1,
-      },
-    });
+      {
+        headers: {
+          Host: targetServer, // Add the Host header for the target server
+        },
+      }
+    );
 
     console.log("Response:", response.data);
   } catch (error) {
