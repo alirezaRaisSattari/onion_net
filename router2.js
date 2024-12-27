@@ -8,19 +8,16 @@ const aesKeyServer3 = crypto.randomBytes(32).toString("hex");
 const proxy = net.createServer((clientSocket) => {
   clientSocket.on("data", (data) => {
     // Parse the HTTP request to extract the hostname and port
-    const request = data.toString();
+    // const request = data.toString();
     // const [hostHeader] = request.match(/Host: .+/) || [];
-    // const [, hostname, port] = hostHeader.split(":");
-    // console.log("Hostname:", hostname, "Port:", port);
+    const [, hostname, port] = hostHeader.split(":");
 
     // Connect to the target server
     const serverSocket = net.createConnection(
-      { host: "localhost", port: 3001 },
+      { host: "localhost", port: 4001 },
       () => {
-        // console.log(`Connected to target server: ${hostname} ${port}`);
         // Encrypt and forward the original request to the server
         const encryptedData = encryptDataWithAES(data, aesKeyServer1);
-        // console.log(`Encrypted data: ${encryptedData}`);
         serverSocket.write(encryptedData);
       }
     );
@@ -51,8 +48,8 @@ const proxy = net.createServer((clientSocket) => {
   });
 });
 
-proxy.listen(3000, () => {
-  console.log(`Proxy server listening on port ${3000}`);
+proxy.listen(4000, () => {
+  console.log(`Proxy server listening on port ${4000}`);
 });
 
 const proxy2 = net.createServer((clientSocket) => {
@@ -62,7 +59,7 @@ const proxy2 = net.createServer((clientSocket) => {
 
     // Connect to the target server
     const serverSocket = net.createConnection(
-      { host: "localhost", port: 3002 },
+      { host: "localhost", port: 4002 },
       () => {
         const decryptedData = decryptDataWithAES(
           data.toString(),
@@ -101,8 +98,8 @@ const proxy2 = net.createServer((clientSocket) => {
   });
 });
 
-proxy2.listen(3001, () => {
-  console.log(`Proxy server2 listening on port ${3001}`);
+proxy2.listen(4001, () => {
+  console.log(`Proxy server2 listening on port ${4001}`);
 });
 
 const proxy3 = net.createServer((clientSocket) => {
@@ -151,6 +148,6 @@ const proxy3 = net.createServer((clientSocket) => {
   });
 });
 
-proxy3.listen(3002, () => {
-  console.log(`Proxy server2 listening on port ${3002}`);
+proxy3.listen(4002, () => {
+  console.log(`Proxy server2 listening on port ${4002}`);
 });
