@@ -9,6 +9,9 @@ async function makeRequest() {
       headers: {
         Host: targetServer, // Add the Host header for the target server
       },
+      data: {
+        xx: 1,
+      },
     });
 
     console.log("Response:", response.data);
