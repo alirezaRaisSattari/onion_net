@@ -20,9 +20,7 @@ const proxy = net.createServer((clientSocket) => {
     // Parse the HTTP request to extract the hostname and port
     const request = data.toString();
     const [hostHeader] = request.match(/Host: .+/) || [];
-    // const [, hostname] = hostHeader.split(":") || [];
     const [, hostname, port] = hostHeader.split(":");
-    // const port = hostHeader.includes(":") ? hostname.split(":")[1] : 80;
     console.log("first", hostname, port);
 
     // Connect to the target server
