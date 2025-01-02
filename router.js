@@ -1,156 +1,87 @@
 const net = require("net");
-const crypto = require("crypto");
 const { encryptDataWithAES, decryptDataWithAES } = require("./crypto-util.js");
-const aesKeyServer1 = crypto.randomBytes(32).toString("hex");
-const aesKeyServer2 = crypto.randomBytes(32).toString("hex");
-const aesKeyServer3 = crypto.randomBytes(32).toString("hex");
+function resGenerator(index) {
+  const jsonResponse = JSON.stringify({ index: index });
+  console.log(jsonResponse);
+  return [
+    "HTTP/1.1 200 OK",
+    "Content-Type: application/json",
+    `Content-Length: ${jsonResponse.length}`,
+    "",
+    jsonResponse,
+  ].join("\r\n");
+}
+function getKeyFromClient(data, index) {
+  const requestData = data.toString();
+  // Split the request into lines
+  const requestLines = requestData.split("\r\n");
+  // Extract headers
+  const headers = {};
+  for (let i = 1; i < requestLines.length; i++) {
+    const line = requestLines[i];
+    if (line === "") break; // Stop at the empty line
+    const [headerName, headerValue] = line.split(": ");
+    headers[headerName.toLowerCase()] = headerValue;
+  }
+  let aesKeyServer;
+  console.log("key header:", `key${index}`, headers[`key${index}`], headers);
+  if (headers[`key${index}`]) aesKeyServer = headers[`key${index}`];
+  console.log(aesKeyServer);
+  return aesKeyServer;
+}
 
-const proxy = net.createServer((clientSocket) => {
-  clientSocket.on("data", (data) => {
-    // Parse the HTTP request to extract the hostname and port
-    const request = data.toString();
-    // const [hostHeader] = request.match(/Host: .+/) || [];
-    // const [, hostname, port] = hostHeader.split(":");
-    // console.log("Hostname:", hostname, "Port:", port);
-
-    // Connect to the target server
-    const serverSocket = net.createConnection(
-      { host: "localhost", port: 3001 },
-      () => {
-        // console.log(`Connected to target server: ${hostname} ${port}`);
-        // Encrypt and forward the original request to the server
-        const encryptedData = encryptDataWithAES(data, aesKeyServer1);
-        // console.log(`Encrypted data: ${encryptedData}`);
-        serverSocket.write(encryptedData);
+const createRouter = (index, curPort, nextPort) => {
+  const proxy = net.createServer((clientSocket) => {
+    clientSocket.on("data", (data) => {
+      // Parse the HTTP request to extract the hostname and port
+      let aesKeyServer = getKeyFromClient(data, index);
+      if (!aesKeyServer) {
+        clientSocket.write(resGenerator());
+        clientSocket.end();
+        return;
       }
-    );
-
-    serverSocket.on("data", (serverData) => {
-      // Decrypt the server response and forward it to the client
-      console.log(`Encrypted data from server: ${serverData}`);
-      const decryptedData = decryptDataWithAES(
-        serverData.toString(),
-        aesKeyServer2
+      // Connect to the target server
+      const serverSocket = net.createConnection(
+        { host: "localhost", port: nextPort },
+        () => {
+          const encryptedData = encryptDataWithAES(data, aesKeyServer);
+          serverSocket.write(encryptedData);
+        }
       );
-      console.log(`Decrypted data from server: ${decryptedData}`);
-      clientSocket.write(decryptedData);
-    });
 
-    serverSocket.on("error", (err) => {
-      console.error("Error connecting to target server:", err.message);
-      clientSocket.end("HTTP/1.1 502 Bad Gateway\r\n\r\n");
-    });
-
-    clientSocket.on("error", (err) => {
-      console.error("Client connection error:", err.message);
-    });
-
-    serverSocket.on("end", () => {
-      clientSocket.end();
-    });
-  });
-});
-
-proxy.listen(3000, () => {
-  console.log(`Proxy server listening on port ${3000}`);
-});
-
-const proxy2 = net.createServer((clientSocket) => {
-  clientSocket.on("data", (data) => {
-    // Decrypt the data received from the first proxy
-    // console.log(`encrypted data in server2: ${data}`);
-
-    // Connect to the target server
-    const serverSocket = net.createConnection(
-      { host: "localhost", port: 3002 },
-      () => {
+      serverSocket.on("data", (serverData) => {
+        // Decrypt the server response and forward it to the client
+        console.log(`Dncrypted data from server: ${serverData}`);
         const decryptedData = decryptDataWithAES(
-          data.toString(),
-          aesKeyServer1
+          serverData.toString(),
+          aesKeyServer
         );
-        // console.log(`Decrypted data in server2: ${decryptedData}`);
-        const encryptedData = encryptDataWithAES(decryptedData, aesKeyServer2);
-        // console.log(`Encrypted data in server2: ${encryptedData}`);
-        serverSocket.write(encryptedData);
-      }
-    );
+        console.log(`Decrypted data from server: ${decryptedData}`);
+        clientSocket.write(decryptedData);
+      });
 
-    serverSocket.on("data", (serverData) => {
-      const decryptedData = decryptDataWithAES(
-        serverData.toString(),
-        aesKeyServer3
-      );
-      console.log(`Decrypted data in server2: ${decryptedData}`);
-      const encryptedData = encryptDataWithAES(decryptedData, aesKeyServer2);
-      console.log(`Encrypted data in server2: ${encryptedData}`);
-      clientSocket.write(encryptedData);
-    });
+      serverSocket.on("error", (err) => {
+        console.error("Error connecting to target server:", err.message);
+        clientSocket.end("HTTP/1.1 502 Bad Gateway\r\n\r\n");
+      });
 
-    serverSocket.on("error", (err) => {
-      console.error("Error connecting to target server:", err.message);
-      clientSocket.end("HTTP/1.1 502 Bad Gateway\r\n\r\n");
-    });
+      clientSocket.on("error", (err) => {
+        console.error("Client connection error:", err.message);
+      });
 
-    clientSocket.on("error", (err) => {
-      console.error("Client connection error:", err.message);
-    });
-
-    serverSocket.on("end", () => {
-      clientSocket.end();
+      serverSocket.on("end", () => {
+        clientSocket.end();
+      });
     });
   });
-});
 
-proxy2.listen(3001, () => {
-  console.log(`Proxy server2 listening on port ${3001}`);
-});
-
-const proxy3 = net.createServer((clientSocket) => {
-  clientSocket.on("data", (data) => {
-    // Decrypt the data received from the first proxy
-
-    // Connect to the target server
-    const serverSocket = net.createConnection(
-      { host: "localhost", port: 8000 },
-      () => {
-        // console.log(`encrypted data in server3: ${data}`);
-        const decryptedData = decryptDataWithAES(
-          data.toString(),
-          aesKeyServer2
-        );
-
-        // console.log(`Decrypted data in server3: ${decryptedData}`);
-
-        serverSocket.write(decryptedData);
-      }
-    );
-
-    serverSocket.on("data", (serverData) => {
-      // Encrypt the server response and forward it to the client
-      console.log(`Data from target server: ${serverData}`);
-      const encryptedData = encryptDataWithAES(
-        serverData.toString(),
-        aesKeyServer3
-      );
-      console.log(`Encrypted data to client server3: ${encryptedData}`);
-      clientSocket.write(encryptedData);
-    });
-
-    serverSocket.on("error", (err) => {
-      console.error("Error connecting to target server:", err.message);
-      clientSocket.end("HTTP/1.1 502 Bad Gateway\r\n\r\n");
-    });
-
-    clientSocket.on("error", (err) => {
-      console.error("Client connection error:", err.message);
-    });
-
-    serverSocket.on("end", () => {
-      clientSocket.end();
-    });
+  proxy.listen(curPort, () => {
+    console.log(`Proxy server listening on port ${curPort}`);
   });
-});
+};
 
-proxy3.listen(3002, () => {
-  console.log(`Proxy server2 listening on port ${3002}`);
-});
+(() => {
+  createRouter(1, 3000, 3001);
+  createRouter(2, 3001, 3002);
+  createRouter(3, 3002, 8000);
+})();
