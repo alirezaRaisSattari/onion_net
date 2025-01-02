@@ -1,5 +1,7 @@
 **initial command:**
-- run routers
+1. replace port of your server with first variable in router.js and make sure your server is running
+
+2. run routers
 ```
 node ./router.js
 ```

@@ -73,7 +73,8 @@ async function makeRequest(encryptionCount) {
       const [_headerPart, bodyPart] = decrypted3.toString().split("\r\n\r\n");
       console.log({ res: bodyPart });
       if (encryptionCount < 4) makeRequest(JSON.parse(bodyPart).index);
-    }, 4000);
+      // else makeRequest(4)
+    }, 10);
     serverSocket.end(); // Close the connection after receiving the response
   });
 }

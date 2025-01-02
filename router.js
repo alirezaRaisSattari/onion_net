@@ -1,3 +1,4 @@
+const serverPort = 8000;
 const net = require("net");
 const { encryptDataWithAES, decryptDataWithAES } = require("./crypto-util.js");
 
@@ -102,11 +103,11 @@ const createRouter = (index, curPort, nextPort) => {
 (() => {
   createRouter(1, 3000, 3001);
   createRouter(2, 3001, 3002);
-  createRouter(3, 3002, 8000);
+  createRouter(3, 3002, serverPort);
 })();
 
 (() => {
   createRouter(1, 4000, 4001);
   createRouter(2, 4001, 4002);
-  createRouter(3, 4002, 8000);
+  createRouter(3, 4002, serverPort);
 })();
