@@ -27,9 +27,8 @@ function getKeyFromClient(data, index) {
     headers[headerName.toLowerCase()] = headerValue;
   }
   let aesKeyServer;
-  console.log("key header:", `key${index}`, headers[`key${index}`], headers);
   if (headers[`key${index}`]) aesKeyServer = headers[`key${index}`];
-  console.log(aesKeyServer);
+  console.log(`update aes Key Server: ${index}`, aesKeyServer);
   return aesKeyServer;
 }
 
@@ -38,12 +37,10 @@ const createRouter = (index, curPort, nextPort) => {
   const proxy = net.createServer((clientSocket) => {
     clientSocket.on("data", (data) => {
       // Parse the HTTP request to extract the hostname and port
-      console.log("init: ", index);
-      console.log({ aesKeyServer });
+      console.log("receive request in server ", index);
       aesKeyServer = aesKeyServer || getKeyFromClient(data, index);
-      console.log({ aesKeyServer });
       if (!aesKeyServer) {
-        console.log(`notfound: `, index);
+        console.log(`not found any key in server `, index);
         clientSocket.write(httpResponseGenerator(index));
         clientSocket.end();
         return;
@@ -53,7 +50,7 @@ const createRouter = (index, curPort, nextPort) => {
       try {
         decryptDataWithAES(data.toString(), aesKeyServer);
       } catch (error) {
-        console.log("can't encrypt in: ", index);
+        console.log("can't encrypt in further servers any more. now in server ", index);
         clientSocket.write(httpResponseGenerator(index + 1));
         clientSocket.end();
         return;
@@ -63,12 +60,10 @@ const createRouter = (index, curPort, nextPort) => {
       const serverSocket = net.createConnection(
         { host: "localhost", port: nextPort },
         () => {
-          console.log("to next router in: ", index);
           const decryptedData = decryptDataWithAES(
             data.toString(),
             aesKeyServer
           );
-          console.log("zzzzzzzzzz", index);
           serverSocket.write(decryptedData);
         }
       );
@@ -76,7 +71,7 @@ const createRouter = (index, curPort, nextPort) => {
       serverSocket.on("data", (serverData) => {
         // Decrypt the server response and forward it to the client
         const encryptedData = encryptDataWithAES(serverData, aesKeyServer);
-        console.log(`encrypted data from server: `, index, serverData);
+        // console.log(`encrypted data from server: `, index, serverData);
         clientSocket.write(encryptedData);
       });
 

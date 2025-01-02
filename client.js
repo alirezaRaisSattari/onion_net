@@ -2,9 +2,16 @@ const net = require("net");
 const crypto = require("crypto");
 const { encryptDataWithAES, decryptDataWithAES } = require("./crypto-util.js");
 
-const aesKeyServer1 = crypto.randomBytes(32).toString("hex");
-const aesKeyServer2 = crypto.randomBytes(32).toString("hex");
-const aesKeyServer3 = crypto.randomBytes(32).toString("hex");
+const aesKeyServer1 =
+  "2fc6893f58b434e353b0fd71ec9bb10d7dbf75aef6eb8c9f657eb08391ed1535";
+const aesKeyServer2 =
+  "2b8d3f815ad55cc947a0d0ca6add1e7a288ebb185ec3dcc20ae54a9b206483e4";
+const aesKeyServer3 =
+  "172ce1726ea34ec6cf2408105e8f92bb8e221fdb06d220761c94e3f29fca4d00";
+// Dynamic key generation
+// const aesKeyServer1 = crypto.randomBytes(32).toString("hex");
+// const aesKeyServer2 = crypto.randomBytes(32).toString("hex");
+// const aesKeyServer3 = crypto.randomBytes(32).toString("hex");
 function httpDataGenerator(index) {
   const requestOptions = {
     host: "localhost",
@@ -34,6 +41,7 @@ function httpDataGenerator(index) {
   return request;
 }
 
+// Send request
 async function makeRequest(encryptionCount) {
   const encrypted3 =
     encryptionCount > 3
@@ -55,6 +63,8 @@ async function makeRequest(encryptionCount) {
       serverSocket.write(encrypted1);
     }
   );
+
+  // Handle response
   serverSocket.on("data", (data) => {
     console.log({ encryptionCount, response: data.toString() });
     const decrypted1 =
