@@ -23,7 +23,6 @@ class Server:
             
     def client_handle(self, conn, addr):
         print(f"[NEW CLIENT] {addr} connected")
-        
         # get the username at the first message
         try:
             username = conn.recv(1024).decode(self.format)
@@ -51,6 +50,7 @@ class Server:
                         self.get_active_users(conn)
                     else:
                         print(f"[{addr}] sent {message}")
+                        # print("[]")
                 else:
                     connected = False
             except Exception as e:
@@ -61,11 +61,12 @@ class Server:
     def get_active_users(self, conn):
         usernames = ', '.join(self.active_users.keys())  # Join all active usernames
         if usernames:
-            conn.send(f"{usernames}".encode(self.format))
+            conn.send(f"[ACTIVEUSERS]: {usernames}".encode(self.format))
         else:
             conn.send("No active users.".encode(self.format))
 
 
 if __name__ == "__main__":
-    server = Server(host=socket.gethostbyname(socket.gethostname()), port=5050)
+    # server = Server(host=socket.gethostbyname(socket.gethostname()), port=5050)
+    server = Server(host="127.0.0.1", port=5050)
     server.start()

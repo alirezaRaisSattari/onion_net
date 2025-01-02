@@ -1,4 +1,5 @@
-const serverPort = 8000;
+// const serverPort = 8000;
+const serverPort = 5050;
 const net = require("net");
 const { encryptDataWithAES, decryptDataWithAES } = require("./crypto-util.js");
 

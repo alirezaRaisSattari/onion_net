@@ -31,10 +31,12 @@ class user_register(QObject):
         print(f"[PYSIDE] this is the self.username: {self.username}")
         # call the new username for the client side...
         # client-socket file is triggered
-        self.client_socket = Client(server_host="192.168.100.8", server_port=5050)
+        # self.client_socket = Client(server_host="192.168.100.8", server_port=5050)
+        self.client_socket = Client(server_host="127.0.0.1", server_port=3000)
         self.client_socket.connect()
         threading.Thread(target=self.client_socket.receive_messages, daemon=True).start()
-
+        
+        
         self.client_socket.send_message(self.username)
         
     def set_active_users_list(self, user_list):

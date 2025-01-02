@@ -1,6 +1,7 @@
 import socket
 import threading
 from queue import Queue
+from client_message_parser import MessageParser
 
 # return [
 #     "HTTP/1.1 200 OK",
@@ -18,7 +19,8 @@ class Client:
         self.addr = (self.server_host, self.server_port)
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         
-        self.message_queue = Queue()
+        self.message_queue = Queue()        # this queue is for the registering user (confirmation) and (get) active users.
+        self.router_index_queue = Queue()   # this queue is for the client to keep the router responds.
 
     def connect(self):
         try:
@@ -44,10 +46,34 @@ class Client:
             while True:
                 msg = self.client.recv(1024).decode(self.format)
                 if msg:
-                    print(f"[SERVER] {msg}")
-                    self.message_queue.put(msg)  # Put the message in the queue
+                    message_parser = MessageParser(msg)
+                    
+                    if message_parser.respond_type == "main_server":
+                        print(f"[SERVER RESPOND TO CLIENT PYSIDE]: {msg}")
+                        self.message_queue.put(msg)  # Put the message in the queue
+
+                    elif message_parser.respond_type == "router":
+                        print(f"[ROUTER RESPOND TO CLIENT]: {msg}")
+                        index = message_parser.get_json_value("index")
+                        self.router_index_queue.put(index)
+                        self.get_key(index)
+
+                    # self.message_queue.put(msg)  # Put the message in the queue
         except Exception as e:
             print(f"[ERROR] Receiving message: {e}")
+            
+            
+    def get_key(self, index):
+        print(f"[ROTER RESPOND TO CLIENT]: the index to look for: {index}")
+        # if index == 1:
+            
+        # elif index == 2:
+            
+        # elif index == 3:
+            
+        pass
+
+
 
 
 # if __name__ == "__main__":
