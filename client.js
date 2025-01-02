@@ -1,37 +1,46 @@
-const axios = require("axios");
+const net = require("net");
 const crypto = require("crypto");
+const { encryptDataWithAES, decryptDataWithAES } = require("./crypto-util.js");
+
+function httpDataGenerator(index) {
+  const requestOptions = {
+    host: "localhost",
+    port: 8000,
+    path: "/",
+    method: "GET",
+    headers: {
+      Host: "localhost",
+      "User-Agent": "Node.js Client",
+    },
+  };
+
+  const request = [
+    `${requestOptions.method} ${requestOptions.path} HTTP/1.1`,
+    `Host: ${requestOptions.headers.Host}`,
+    `User-Agent: ${requestOptions.headers["User-Agent"]}`,
+    "",
+    "",
+  ].join("\r\n");
+  return request;
+}
 
 async function makeRequest() {
   const aesKeyServer1 = crypto.randomBytes(32).toString("hex");
   const aesKeyServer2 = crypto.randomBytes(32).toString("hex");
   const aesKeyServer3 = crypto.randomBytes(32).toString("hex");
-  const proxy1 = "http://localhost:3000"; // Proxy server URL
-  const targetServer = "localhost:8000"; // Target server details
-
-  try {
-    let response = await axios.post(
-      proxy1,
-      {
-        // Data to be sent in the body of the request
-        data: {
-          key1: "value1",
-          key2: "value2",
-        },
-      },
-      {
-        headers: {
-          Host: targetServer, // Add the Host header for the target server
-          Key1: aesKeyServer1,
-          Key2: aesKeyServer2,
-          Key3: aesKeyServer3,
-        },
-      }
-    );
-
-    console.log(response.data);
-  } catch (error) {
-    console.error("Error:", error.message);
-  }
+  const encrypted1 = encryptDataWithAES(httpDataGenerator(), aesKeyServer1);
+  const encrypted2 = encryptDataWithAES(encrypted1, aesKeyServer2);
+  const encrypted3 = encryptDataWithAES(encrypted2, aesKeyServer3);
+  const serverSocket = net.createConnection(
+    { host: "localhost", port: 3000 },
+    () => {
+      serverSocket.write(encrypted3);
+    }
+  );
+  serverSocket.on("data", (data) => {
+    console.log("Received from server:", data.toString());
+    serverSocket.end(); // Close the connection after receiving the response
+  });
 }
 
 makeRequest();

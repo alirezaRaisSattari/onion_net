@@ -1,7 +1,7 @@
 const net = require("net");
 const { encryptDataWithAES, decryptDataWithAES } = require("./crypto-util.js");
 
-function resGenerator(index) {
+function httpResponseGenerator(index) {
   const jsonResponse = JSON.stringify({ index: index });
   console.log(jsonResponse);
   return [
@@ -36,30 +36,34 @@ const createRouter = (index, curPort, nextPort) => {
   const proxy = net.createServer((clientSocket) => {
     clientSocket.on("data", (data) => {
       // Parse the HTTP request to extract the hostname and port
+      console.log("xxxxxxxxxxx", index);
       let aesKeyServer = getKeyFromClient(data, index);
       if (!aesKeyServer) {
-        clientSocket.write(resGenerator());
+        clientSocket.write(httpResponseGenerator());
         clientSocket.end();
         return;
       }
+      console.log("xxxxxxxxxxx", index);
       // Connect to the target server
       const serverSocket = net.createConnection(
         { host: "localhost", port: nextPort },
         () => {
-          const encryptedData = decryptDataWithAES(
+          console.log("yyyyyyyyy", index);
+          const decryptedData = decryptDataWithAES(
             data.toString(),
             aesKeyServer
           );
-          serverSocket.write(encryptedData);
+          console.log("zzzzzzzzzz", index);
+          serverSocket.write(decryptedData);
         }
       );
 
       serverSocket.on("data", (serverData) => {
         // Decrypt the server response and forward it to the client
-        console.log(`encrypted data from server: ${serverData}`);
-        const decryptedData = encryptDataWithAES(serverData, aesKeyServer);
-        console.log(`decrypted data from server: ${decryptedData}`);
-        clientSocket.write(decryptedData);
+        console.log(`decrypted data from server: ${serverData}`);
+        const encryptedData = encryptDataWithAES(serverData, aesKeyServer);
+        console.log(`encrypted data from server: ${encryptedData}`);
+        clientSocket.write(encryptedData);
       });
 
       serverSocket.on("error", (err) => {
