@@ -1,5 +1,6 @@
 const net = require("net");
 const { encryptDataWithAES, decryptDataWithAES } = require("./crypto-util.js");
+
 function resGenerator(index) {
   const jsonResponse = JSON.stringify({ index: index });
   console.log(jsonResponse);
@@ -11,6 +12,7 @@ function resGenerator(index) {
     jsonResponse,
   ].join("\r\n");
 }
+
 function getKeyFromClient(data, index) {
   const requestData = data.toString();
   // Split the request into lines
@@ -44,19 +46,19 @@ const createRouter = (index, curPort, nextPort) => {
       const serverSocket = net.createConnection(
         { host: "localhost", port: nextPort },
         () => {
-          const encryptedData = encryptDataWithAES(data, aesKeyServer);
+          const encryptedData = decryptDataWithAES(
+            data.toString(),
+            aesKeyServer
+          );
           serverSocket.write(encryptedData);
         }
       );
 
       serverSocket.on("data", (serverData) => {
         // Decrypt the server response and forward it to the client
-        console.log(`Dncrypted data from server: ${serverData}`);
-        const decryptedData = decryptDataWithAES(
-          serverData.toString(),
-          aesKeyServer
-        );
-        console.log(`Decrypted data from server: ${decryptedData}`);
+        console.log(`encrypted data from server: ${serverData}`);
+        const decryptedData = encryptDataWithAES(serverData, aesKeyServer);
+        console.log(`decrypted data from server: ${decryptedData}`);
         clientSocket.write(decryptedData);
       });
 
@@ -84,4 +86,10 @@ const createRouter = (index, curPort, nextPort) => {
   createRouter(1, 3000, 3001);
   createRouter(2, 3001, 3002);
   createRouter(3, 3002, 8000);
+})();
+
+(() => {
+  createRouter(1, 4000, 4001);
+  createRouter(2, 4001, 4002);
+  createRouter(3, 4002, 8000);
 })();
