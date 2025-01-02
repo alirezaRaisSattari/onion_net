@@ -2,6 +2,10 @@ const net = require("net");
 const crypto = require("crypto");
 const { encryptDataWithAES, decryptDataWithAES } = require("./crypto-util.js");
 
+const aesKeyServer1 = crypto.randomBytes(32).toString("hex");
+const aesKeyServer2 = crypto.randomBytes(32).toString("hex");
+const aesKeyServer3 = crypto.randomBytes(32).toString("hex");
+
 function httpDataGenerator(index) {
   const requestOptions = {
     host: "localhost",
@@ -10,7 +14,9 @@ function httpDataGenerator(index) {
     method: "GET",
     headers: {
       Host: "localhost",
-      "User-Agent": "Node.js Client",
+      key1: `CustomValue${index}`,
+      key2: `CustomValue${index}`,
+      key3: `CustomValue${index}`,
     },
   };
 
@@ -25,9 +31,6 @@ function httpDataGenerator(index) {
 }
 
 async function makeRequest() {
-  const aesKeyServer1 = crypto.randomBytes(32).toString("hex");
-  const aesKeyServer2 = crypto.randomBytes(32).toString("hex");
-  const aesKeyServer3 = crypto.randomBytes(32).toString("hex");
   const encrypted1 = encryptDataWithAES(httpDataGenerator(), aesKeyServer1);
   const encrypted2 = encryptDataWithAES(encrypted1, aesKeyServer2);
   const encrypted3 = encryptDataWithAES(encrypted2, aesKeyServer3);

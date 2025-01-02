@@ -2,7 +2,7 @@ const net = require("net");
 const { encryptDataWithAES, decryptDataWithAES } = require("./crypto-util.js");
 
 function httpResponseGenerator(index) {
-  const jsonResponse = JSON.stringify({ index: index });
+  const jsonResponse = JSON.stringify({ index });
   console.log(jsonResponse);
   return [
     "HTTP/1.1 200 OK",
@@ -39,7 +39,7 @@ const createRouter = (index, curPort, nextPort) => {
       console.log("xxxxxxxxxxx", index);
       let aesKeyServer = getKeyFromClient(data, index);
       if (!aesKeyServer) {
-        clientSocket.write(httpResponseGenerator());
+        clientSocket.write(httpResponseGenerator(index));
         clientSocket.end();
         return;
       }
