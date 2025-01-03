@@ -2,6 +2,7 @@ import socket
 import threading
 from queue import Queue
 from client_message_parser import MessageParser
+from http_message_builder import HTTPMessageBuilder
 
 # return [
 #     "HTTP/1.1 200 OK",
@@ -64,15 +65,31 @@ class Client:
             
             
     def get_key(self, index):
+        print("[PYSIDE]: get key function is triggered")
         print(f"[ROTER RESPOND TO CLIENT]: the index to look for: {index}")
-        # if index == 1:
-            
+        my_variable_for_private_keys = [{"key1":"asdf"}, {"key2":"sdfg"}, {"key3":"sldkfj"}]
+        body = self.message_queue.get()
+        if str(index) == "1":
+            print("processing the http message....")
+            http_message = HTTPMessageBuilder(
+                host="localhost",
+                port=8000,
+                path="/",
+                method="GET",
+                headers=my_variable_for_private_keys,
+                body=body,
+            )
+            print(f"[PYSIDE CILENT]: sending message to the ROUTER index{index}")
+            # self.send_message(http_message)
+            self.client.send(http_message)
+        else: 
+            print("asdadasdasdasdasdasdsdads")
+
         # elif index == 2:
             
         # elif index == 3:
-            
-        pass
-
+        print("[PYSIDE CLIENT]: the end of the get key function")
+        
 
 
 
