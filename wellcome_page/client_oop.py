@@ -68,23 +68,23 @@ class Client:
         print("[PYSIDE]: get key function is triggered")
         print(f"[ROTER RESPOND TO CLIENT]: the index to look for: {index}")
         my_variable_for_private_keys = [{"key1":"asdf"}, {"key2":"sdfg"}, {"key3":"sldkfj"}]
-        body = self.message_queue.get()
-        if str(index) == "1":
-            print("processing the http message....")
+        # body = self.message_queue.get()
+        if index == 1:
+            print(f"[PYSIDE CILENT]: sending message to the ROUTER index{index}")
             http_message = HTTPMessageBuilder(
                 host="localhost",
                 port=8000,
                 path="/",
                 method="GET",
                 headers=my_variable_for_private_keys,
-                body=body,
+                body="amir is trying to register",
             )
-            print(f"[PYSIDE CILENT]: sending message to the ROUTER index{index}")
-            # self.send_message(http_message)
-            self.client.send(http_message)
+            # the format that I send: firstly the http format, then str of that, then encoded to utf-8
+            dict1 = str(http_message.to_http_format()) 
+            self.send_message(dict1)
+            
         else: 
-            print("asdadasdasdasdasdasdsdads")
-
+            pass
         # elif index == 2:
             
         # elif index == 3:
