@@ -15,6 +15,8 @@ function encryptDataWithAES(data, aesKey) {
 
 // Decrypt data with AES
 function decryptDataWithAES(encryptedData, aesKey) {
+  // console.log("[ENCRIPTOR] this is the encripted message ", encryptedData )
+  // console.log("[ENCRIPTOR] this is the aes ", {aesKey})
   const parts = encryptedData.split(":");
   const iv = Buffer.from(parts.shift(), "hex");
   const encryptedText = parts.join(":");

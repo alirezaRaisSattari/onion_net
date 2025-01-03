@@ -1,3 +1,4 @@
 node_modules
 package-lock.json
 welcomepage/__pycache__/
+welcomepage/tempCodeRunnerFile.py

@@ -1,16 +1,8 @@
 import socket
-import threading
 from queue import Queue
 from client_message_parser import MessageParser
 from http_message_builder import HTTPMessageBuilder
-
-# return [
-#     "HTTP/1.1 200 OK",
-#     "Content-Type: text/plain",
-#     `Content-Length: ${8 + body.length}`,
-#     "",
-#     `{index:${body}}`,
-#   ]
+from encryptor import Encryptor
 
 class Client:
     def __init__(self, server_host, server_port):
@@ -22,6 +14,12 @@ class Client:
         
         self.message_queue = Queue()        # this queue is for the registering user (confirmation) and (get) active users.
         self.router_index_queue = Queue()   # this queue is for the client to keep the router responds.
+        
+        self.keys = {
+            1: bytes.fromhex("2fc6893f58b434e353b0fd71ec9bb10d7dbf75aef6eb8c9f657eb08391ed1535"),
+            2: bytes.fromhex("2b8d3f815ad55cc947a0d0ca6add1e7a288ebb185ec3dcc20ae54a9b206483e4"),
+            3: bytes.fromhex("172ce1726ea34ec6cf2408105e8f92bb8e221fdb06d220761c94e3f29fca4d00"),
+        }
 
     def connect(self):
         try:
@@ -67,11 +65,16 @@ class Client:
     def get_key(self, index):
         print("[PYSIDE]: get key function is triggered")
         print(f"[ROTER RESPOND TO CLIENT]: the index to look for: {index}")
-        my_variable_for_private_keys = [{"key1":"asdf"}, {"key2":"sdfg"}, {"key3":"sldkfj"}]
-        # body = self.message_queue.get()
-        if index == 1:
-            print(f"[PYSIDE CILENT]: sending message to the ROUTER index{index}")
-            http_message = HTTPMessageBuilder(
+        # my_variable_for_private_keys = [{"key1":"asdf"}, {"key2":"sdfg"}, {"key3":"sldkfj"}]
+        my_variable_for_private_keys = [
+            {f"key{key}": value.hex()} for key, value in self.keys.items()
+        ]
+        
+        encriptor_key1 = Encryptor(next((item["key1"] for item in my_variable_for_private_keys if "key1" in item), None))
+        encriptor_key2 = Encryptor(next((item["key2"] for item in my_variable_for_private_keys if "key2" in item), None))
+        encriptor_key3 = Encryptor(next((item["key3"] for item in my_variable_for_private_keys if "key3" in item), None))
+        
+        http_message = HTTPMessageBuilder(
                 host="localhost",
                 port=8000,
                 path="/",
@@ -79,20 +82,33 @@ class Client:
                 headers=my_variable_for_private_keys,
                 body="amir is trying to register",
             )
-            # the format that I send: firstly the http format, then str of that, then encoded to utf-8
-            dict1 = str(http_message.to_http_format()) 
+        dict1 = str(http_message.to_http_format()) 
+
+        if index == 1:
+            print(f"[PYSIDE CILENT]: sending message to the ROUTER index 1")
             self.send_message(dict1)
             
-        else: 
-            pass
-        # elif index == 2:
+        elif index == 2:
+            print(f"[PYSIDE CILENT]: sending message to the ROUTER index 2")
+            encripted_msg_key1 = encriptor_key1.encrypt(dict1)
+            print(f"[PYSIDE] this is encripted by key1 {encripted_msg_key1}")
+            self.send_message(encripted_msg_key1)
             
-        # elif index == 3:
+        elif index == 3:
+            print(f"[PYSIDE CILENT]: sending message to the ROUTER index 3")
+            encripted_msg_key2 = encriptor_key2.encrypt(dict1)
+            encripted_msg_key2_key1 = encriptor_key1.encrypt(encripted_msg_key2)
+            self.send_message(encripted_msg_key2_key1)
+            
+        elif index == 4:
+            print(f"[PYSIDE CILENT]: sending message to the ROUTER index 4")
+            encripted_msg_key3 = encriptor_key3.encrypt(dict1)
+            encripted_msg_key3_key2 = encriptor_key2.encrypt(encripted_msg_key3)
+            encripted_msg_key3_key2_key1 = encriptor_key1.encrypt(encripted_msg_key3_key2)
+            self.send_message(encripted_msg_key3_key2_key1)
+            
         print("[PYSIDE CLIENT]: the end of the get key function")
         
-
-
-
 # if __name__ == "__main__":
 #     client = Client(server_host="192.168.100.8", server_port=5050)
 #     client.connect()

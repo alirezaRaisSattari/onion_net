@@ -15,53 +15,57 @@ function httpResponseGenerator(index) {
   ].join("\r\n");
 }
 
-// function getKeyFromClient(data, index) {
-//   const requestData = data.toString();
-//   // Split the request into lines
-//   const requestLines = requestData.split("\r\n");
-//   // Extract headers
-//   const headers = {};
-//   for (let i = 1; i < requestLines.length; i++) {
-//     const line = requestLines[i];
-//     if (line === "") break; // Stop at the empty line
-//     const [headerName, headerValue] = line.split(": ");
-//     headers[headerName.toLowerCase()] = headerValue;
-//   }
-//   let aesKeyServer;
-//   if (headers[`key${index}`]) aesKeyServer = headers[`key${index}`];
-//   console.log(`update aes Key Server: ${index}`, aesKeyServer);
-//   return aesKeyServer;
-// }
-
 function getKeyFromClient(data, index) {
+  // const requestData = data.toString();
   const requestData = data.toString('utf-8'); // Decode the incoming message as UTF-8
-  console.log("Decoded message from client:", requestData);
+  console.log("[ROUTER] Decoded message from client:", requestData);
+  console.log("[ROUTER] index is ", index)
 
-  // Split the decoded message into lines
+  // Split the request into lines
   const requestLines = requestData.split("\r\n");
-  if (requestLines.length < 1) {
-    console.error("Invalid request format");
-    return null;
-  }
-
-  // Parse headers
+  // Extract headers
   const headers = {};
-  let i = 1; // Start after the request line
-  while (i < requestLines.length && requestLines[i] !== "") {
+  for (let i = 1; i < requestLines.length; i++) {
     const line = requestLines[i];
+    if (line === "") break; // Stop at the empty line
     const [headerName, headerValue] = line.split(": ");
-    if (headerName && headerValue) {
-      headers[headerName.toLowerCase()] = headerValue;
-    }
-    i++;
+    headers[headerName.toLowerCase()] = headerValue;
   }
-
-  // Extract the AES key based on index
-  const aesKeyServer = headers[`key${index}`];
+  let aesKeyServer;
+  if (headers[`key${index}`]) aesKeyServer = headers[`key${index}`];
   console.log(`update aes Key Server: ${index}`, aesKeyServer);
-
   return aesKeyServer;
 }
+
+// function getKeyFromClient(data, index) {
+//   const requestData = data.toString('utf-8'); // Decode the incoming message as UTF-8
+//   console.log("Decoded message from client:", requestData);
+
+//   // Split the decoded message into lines
+//   const requestLines = requestData.split("\r\n");
+//   if (requestLines.length < 1) {
+//     console.error("Invalid request format");
+//     return null;
+//   }
+
+//   // Parse headers
+//   const headers = {};
+//   let i = 1; // Start after the request line
+//   while (i < requestLines.length && requestLines[i] !== "") {
+//     const line = requestLines[i];
+//     const [headerName, headerValue] = line.split(": ");
+//     if (headerName && headerValue) {
+//       headers[headerName.toLowerCase()] = headerValue;
+//     }
+//     i++;
+//   }
+
+//   // Extract the AES key based on index
+//   const aesKeyServer = headers[`key${index}`];
+//   console.log(`update aes Key Server: ${index}`, aesKeyServer);
+
+//   return aesKeyServer;
+// }
 
 
 const createRouter = (index, curPort, nextPort) => {

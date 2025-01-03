@@ -37,7 +37,7 @@ class user_register(QObject):
         threading.Thread(target=self.client_socket.receive_messages, daemon=True).start()
         
         
-        self.client_socket.send_message(self.username)
+        self.client_socket.send_message(self.username) ##################################### this is the initiating message
         
     def set_active_users_list(self, user_list):
         if self.active_users_list != user_list:

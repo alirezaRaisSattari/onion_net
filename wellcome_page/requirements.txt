@@ -1,0 +1,20 @@
+pycryptodome
+socket
+threading
+PySide6
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+important note: 
+for running this:
+
+from Crypto.Cipher import AES
+from Crypto.Random import get_random_bytes
+from base64 import b64encode, b64decode
+
+it has to be done like this:
+pip uninstall crypto
+pip uninstall pycryptodome
+pip install pycryptodome
+this is becuse the fact that old crypto package had some bugs and that new package is being replaced.
+/////////////////////////////////////////////////////////////////////////////////////////
