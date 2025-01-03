@@ -17,9 +17,9 @@ function httpResponseGenerator(index) {
 
 function getKeyFromClient(data, index) {
   // const requestData = data.toString();
-  const requestData = data.toString('utf-8'); // Decode the incoming message as UTF-8
+  const requestData = data.toString("utf-8"); // Decode the incoming message as UTF-8
   console.log("[ROUTER] Decoded message from client:", requestData);
-  console.log("[ROUTER] index is ", index)
+  console.log("[ROUTER] index is ", index);
 
   // Split the request into lines
   const requestLines = requestData.split("\r\n");
@@ -67,7 +67,6 @@ function getKeyFromClient(data, index) {
 //   return aesKeyServer;
 // }
 
-
 const createRouter = (index, curPort, nextPort) => {
   let aesKeyServer;
   const proxy = net.createServer((clientSocket) => {
@@ -86,7 +85,10 @@ const createRouter = (index, curPort, nextPort) => {
       try {
         decryptDataWithAES(data.toString(), aesKeyServer);
       } catch (error) {
-        console.log("can't encrypt in further servers any more. now in server ", index);
+        console.log(
+          "can't encrypt in further servers any more. now in server ",
+          index
+        );
         clientSocket.write(httpResponseGenerator(index + 1));
         clientSocket.end();
         return;
@@ -118,6 +120,14 @@ const createRouter = (index, curPort, nextPort) => {
 
       clientSocket.on("error", (err) => {
         console.error("Client connection error:", err.message);
+      });
+
+      clientSocket.on("end", (err) => {
+        console.error("it ended:", err.message);
+      });
+
+      clientSocket.on("close", (err) => {
+        console.error("it closed:", err.message);
       });
 
       serverSocket.on("end", () => {
