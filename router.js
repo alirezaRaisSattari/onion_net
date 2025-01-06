@@ -1,7 +1,10 @@
-// const serverPort = 8000;
-const serverPort = 5050;
+const serverPort = 8000;
+// const serverPort = 5050;
 const net = require("net");
-const { encryptDataWithAES, decryptDataWithAES } = require("./crypto-util.js");
+const {
+  encryptDataWithAES,
+  decryptDataWithAES,
+} = require("./services/crypto-util.js");
 
 function httpResponseGenerator(index) {
   const jsonResponse = JSON.stringify({ index });
@@ -36,36 +39,6 @@ function getKeyFromClient(data, index) {
   console.log(`update aes Key Server: ${index}`, aesKeyServer);
   return aesKeyServer;
 }
-
-// function getKeyFromClient(data, index) {
-//   const requestData = data.toString('utf-8'); // Decode the incoming message as UTF-8
-//   console.log("Decoded message from client:", requestData);
-
-//   // Split the decoded message into lines
-//   const requestLines = requestData.split("\r\n");
-//   if (requestLines.length < 1) {
-//     console.error("Invalid request format");
-//     return null;
-//   }
-
-//   // Parse headers
-//   const headers = {};
-//   let i = 1; // Start after the request line
-//   while (i < requestLines.length && requestLines[i] !== "") {
-//     const line = requestLines[i];
-//     const [headerName, headerValue] = line.split(": ");
-//     if (headerName && headerValue) {
-//       headers[headerName.toLowerCase()] = headerValue;
-//     }
-//     i++;
-//   }
-
-//   // Extract the AES key based on index
-//   const aesKeyServer = headers[`key${index}`];
-//   console.log(`update aes Key Server: ${index}`, aesKeyServer);
-
-//   return aesKeyServer;
-// }
 
 const createRouter = (index, curPort, nextPort) => {
   let aesKeyServer;
@@ -120,14 +93,6 @@ const createRouter = (index, curPort, nextPort) => {
 
       clientSocket.on("error", (err) => {
         console.error("Client connection error:", err.message);
-      });
-
-      clientSocket.on("end", (err) => {
-        console.error("it ended:", err.message);
-      });
-
-      clientSocket.on("close", (err) => {
-        console.error("it closed:", err.message);
       });
 
       serverSocket.on("end", () => {
