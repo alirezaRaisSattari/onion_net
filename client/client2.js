@@ -41,6 +41,7 @@ setTimeout(() => {
     // });
     const ws = connectToHost(6000, {
       client: (data) => {
+        console.log("receive form client1: ", data);
         socket.emit("message_from_node", { data });
       },
     });
@@ -55,8 +56,9 @@ setTimeout(() => {
 
     // Listen for messages from Python
     socket.on("message_from_python", (message) => {
-      ws({ event: "server", data: message });
       console.log("Message from Python:", message.data);
+      console.log("calling client2");
+      ws(JSON.stringify({ event: "server", data: message }));
     });
 
     // Handle disconnection

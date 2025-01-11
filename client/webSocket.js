@@ -45,7 +45,6 @@ const createHost = (wss, eventHandlers) =>
         reject(message);
       });
       resolve(ws);
-      ws.send(JSON.stringify({ msg: "Welcome to the WebSocket server!" }));
     });
     return {};
   });

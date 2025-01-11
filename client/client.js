@@ -45,6 +45,7 @@ setTimeout(() => {
     const socket = io("http://127.0.0.1:5000");
     const eventSender = await createWSHost({
       server: (data) => {
+        console.log("message from client2: ", data);
         socket.emit("message_from_node", { data });
       },
     });
@@ -69,8 +70,9 @@ setTimeout(() => {
 
     // Listen for messages from Python
     socket.on("message_from_python", (message) => {
-      eventSender.send(JSON.stringify({ event: "client", data: message }));
       console.log("Message from Python:", message.data);
+      console.log("calling client2: ", message.data);
+      eventSender.send(JSON.stringify({ event: "client", data: message }));
     });
 
     // Handle disconnection
