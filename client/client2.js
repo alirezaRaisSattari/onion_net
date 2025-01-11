@@ -11,21 +11,6 @@ const onionService = new OnionSDK();
 const { spawn } = require("child_process");
 const pythonProcess = spawn("python", ["../pynodeqml/main.py", "5000"]);
 
-// Listen for standard output
-pythonProcess.stdout.on("data", (data) => {
-  console.log(`Output: ${data.toString()}`);
-});
-
-// Listen for standard error
-pythonProcess.stderr.on("data", (data) => {
-  console.error(`Error: ${data.toString()}`);
-});
-
-// Listen for the process to exit
-pythonProcess.on("close", (code) => {
-  console.log(`Process exited with code ${code}`);
-});
-
 async function callServer(path, body, method) {
   const x = await onionService.sendRequest(
     PORT,
@@ -44,22 +29,19 @@ const createWSHost = async () => {
   await callServer("/host", { ip: "localhost", port: PORT }, "POST");
 };
 
-// callServer("/roll-dice", { x: 1 });
-// const
-setTimeout(() => {
-  // callServer("/host", { x: 1 });
-  connectToHost(6000);
-}, 1000);
-
 // Start the HTTP and WebSocket server
-server.listen(PORT, () => {
+server.listen(PORT, async () => {
   const socket = io("http://127.0.0.1:5001");
   // Setup Node console input
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });
-
+  const ws = connectToHost(6000, {
+    client: (data) => {
+      socket.emit("message_from_node", { data });
+    },
+  });
   // Every time the user typesconst routerPort = 4000; a line in Node console, send it to Python
   rl.on("line", (input) => {
     socket.emit("message_from_node", { data: input });
@@ -74,6 +56,7 @@ server.listen(PORT, () => {
 
   // Listen for messages from Python
   socket.on("message_from_python", (message) => {
+    ws({ event: "server", data: message });
     console.log("Message from Python:", message.data);
   });
 

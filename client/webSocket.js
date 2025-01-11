@@ -19,7 +19,7 @@ const connectToHost = (port, eventHandlers) => {
   ws.onmessage = (event) => {
     const msg = JSON.parse(event.data);
     console.log("received event as client:", msg);
-    handleReceivedMessages(msg);
+    handleReceivedMessages(msg, eventHandlers);
   };
 
   ws.onclose = () => {
@@ -32,14 +32,14 @@ const connectToHost = (port, eventHandlers) => {
   return { sendEvent };
 };
 
-const createHost = (wss) =>
+const createHost = (wss, eventHandlers) =>
   new Promise((resolve, reject) => {
     wss.on("connection", (ws) => {
       console.log("New WebSocket connection");
 
       ws.on("message", (message) => {
         console.log(`received event as host: ${message}`);
-        handleReceivedMessages(message);
+        handleReceivedMessages(message, eventHandlers);
       });
       ws.on("error", (message) => {
         reject(message);
@@ -51,7 +51,7 @@ const createHost = (wss) =>
   });
 
 // Function to handle messages received from clients
-function handleReceivedMessages(msg) {
+function handleReceivedMessages(msg, eventHandlers) {
   if (msg.event && eventHandlers[msg.event]) {
     eventHandlers[msg.event](msg.data);
   } else {
