@@ -38,8 +38,9 @@ const createHost = (wss, eventHandlers) =>
       console.log("New WebSocket connection");
 
       ws.on("message", (message) => {
-        console.log(`received event as host: ${message}`);
-        handleReceivedMessages(message, eventHandlers);
+        const parsedMsg = JSON.parse(message);
+        console.log(`received event as host: ${parsedMsg}`);
+        handleReceivedMessages(parsedMsg, eventHandlers);
       });
       ws.on("error", (message) => {
         reject(message);
