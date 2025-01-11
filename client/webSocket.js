@@ -29,7 +29,7 @@ const connectToHost = (port, eventHandlers) => {
   ws.onerror = (error) => {
     console.error("WebSocket error:", error);
   };
-  return { sendEvent };
+  return sendEvent;
 };
 
 const createHost = (wss, eventHandlers) =>
