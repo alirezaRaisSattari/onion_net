@@ -13,7 +13,7 @@ const connectToHost = (port, eventHandlers) => {
 
   ws.onopen = () => {
     console.log("WebSocket connection opened");
-    sendEvent({ event: "client", data: "Hello, Server!" });
+    sendEvent(JSON.stringify({ event: "greet", data: "Hello, Server!" }));
   };
 
   ws.onmessage = (event) => {
