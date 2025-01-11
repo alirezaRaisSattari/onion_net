@@ -2,45 +2,28 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const port = 8000;
-
+const hosts = [];
 // Use body-parser middleware to parse JSON bodies
 app.use(bodyParser.json());
 
-app.get("/", (req, res) => {
-  console.log("get / received: ", req.body);
-  res.send("Hello from server on port 8000!");
+const users = [];
+app.post("/host", (req, res) => {
+  const newHost = { ip: req.body.ip, port: req.body.port };
+  const exists = hosts.some(
+    (host) => host.ip === newHost.ip && host.port === newHost.port
+  );
+  exists || hosts.push({ ...req.body });
+  res.send(JSON.stringify({ success: true }));
+});
+app.get("/host", (req, res) => {
+  res.send(JSON.stringify({ hosts }));
 });
 
-app.post("/", (req, res) => {
-  console.log("post / received: ", req.body);
-  res.send("Hello from server on port 8000!");
+app.get("/roll-dice", (req, res) => {
+  const diceNumber = Math.floor(Math.random() * 6);
+  res.send(JSON.stringify({ diceNumber }));
 });
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
-// const WebSocket = require("ws");
-
-// const server = new WebSocket.Server({ port: 8000 });
-
-// server.on("connection", (socket) => {
-//   console.log("Client connected");
-
-//   // Broadcast received messages to all connected clients
-//   socket.on("message", (message) => {
-//     console.log(`Received message: ${message}`);
-//     server.clients.forEach((client) => {
-//       if (client !== socket && client.readyState === WebSocket.OPEN) {
-//         client.send(message);
-//       }
-//     });
-//   });
-
-//   // Handle client disconnect
-//   socket.on("close", () => {
-//     console.log("Client disconnected");
-//   });
-// });
-
-// console.log("Signaling server running on ws://localhost:8000");
