@@ -7,13 +7,13 @@ function getCurrentTime() {
 
 const connectToHost = (port, eventHandlers) => {
   const ws = new WebSocket("ws://localhost:" + port);
-  // function sendEvent(body) {
-  //   ws.send(body);
-  // }
+  function sendEvent(body) {
+    ws.send(body);
+  }
 
   ws.onopen = () => {
     console.log("WebSocket connection opened");
-    // sendEvent({ event: "greet", data: "Hello, Server!" });
+    sendEvent({ event: "client", data: "Hello, Server!" });
   };
 
   ws.onmessage = (event) => {
@@ -29,7 +29,7 @@ const connectToHost = (port, eventHandlers) => {
   ws.onerror = (error) => {
     console.error("WebSocket error:", error);
   };
-  return ws.send();
+  return sendEvent;
 };
 
 const createHost = (wss, eventHandlers) =>
