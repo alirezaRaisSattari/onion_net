@@ -5,6 +5,7 @@ const WebSocket = require("ws");
 const { connectToHost, createHost } = require("./webSocket");
 const app = express();
 const io = require("socket.io-client");
+const readline = require('readline');
 const PORT = process.env.PORT || 6000;
 const routerPort = 3000;
 
@@ -39,7 +40,6 @@ connectToHost(5001);
 // Start the HTTP and WebSocket server
 server.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);
-  const eventSender = await createWSHost();
   const socket = io("http://127.0.0.1:5000");
   // Setup Node console input
   const rl = readline.createInterface({
@@ -72,6 +72,7 @@ server.listen(PORT, async () => {
   socket.on("error", (error) => {
     console.error("Socket error:", error);
   });
+  const eventSender = await createWSHost();
 
   setInterval(() => {
     eventSender.send(JSON.stringify({ msg: "Welcome to 22222" }));
