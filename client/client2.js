@@ -9,7 +9,7 @@ const routerPort = 4000;
 const readline = require("readline");
 const onionService = new OnionSDK();
 const { spawn } = require("child_process");
-const pythonProcess = spawn("python", ["../main.py", "5000"]);
+const pythonProcess = spawn("python", ["../pynodeqml/main.py", "5000"]);
 
 // Listen for standard output
 pythonProcess.stdout.on("data", (data) => {

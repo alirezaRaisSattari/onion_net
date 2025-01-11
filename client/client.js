@@ -5,11 +5,11 @@ const WebSocket = require("ws");
 const { connectToHost, createHost } = require("./webSocket");
 const app = express();
 const io = require("socket.io-client");
-const readline = require('readline');
+const readline = require("readline");
 const PORT = process.env.PORT || 6000;
 const routerPort = 3000;
 const { spawn } = require("child_process");
-const pythonProcess = spawn("python", ["../main.py", "5001"]);
+const pythonProcess = spawn("python", ["../pynodeqml/main.py", "5001"]);
 
 // Listen for standard output
 pythonProcess.stdout.on("data", (data) => {
