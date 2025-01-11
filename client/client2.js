@@ -44,10 +44,7 @@ setTimeout(() => {
         socket.emit("message_from_node", { data });
       },
     });
-    // Every time the user typesconst routerPort = 4000; a line in Node console, send it to Python
-    // rl.on("line", (input) => {
-    //   socket.emit("message_from_node", { data: input });
-    // });
+    socket.emit("message_from_node", { data: "username" });
 
     // Handle successful connection
     socket.on("connect", () => {
