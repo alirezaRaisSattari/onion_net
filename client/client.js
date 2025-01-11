@@ -40,10 +40,10 @@ async function callServer(path, body, method) {
   console.log(x);
 }
 const server = http.createServer(app);
-const createWSHost = async () => {
+const createWSHost = async (eventHandlers) => {
   const wss = new WebSocket.Server({ server });
-  const eventSender = await createHost(wss);
-  await callServer("/host", { ip: "localhost", port: PORT }, "POST");
+  const eventSender = await createHost(wss, eventHandlers);
+  // await callServer("/host", { ip: "localhost", port: PORT }, "POST");
   return eventSender;
 };
 
@@ -58,6 +58,12 @@ connectToHost(5001);
 server.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);
   const socket = io("http://127.0.0.1:5000");
+  const eventSender = await createWSHost({
+    server: (data) => {
+      socket.emit("message_from_node", { data });
+    },
+  });
+
   // Setup Node console input
   const rl = readline.createInterface({
     input: process.stdin,
@@ -78,6 +84,7 @@ server.listen(PORT, async () => {
 
   // Listen for messages from Python
   socket.on("message_from_python", (message) => {
+    eventSender.send(JSON.stringify({ event: "client", data: message }));
     console.log("Message from Python:", message.data);
   });
 
@@ -89,7 +96,6 @@ server.listen(PORT, async () => {
   socket.on("error", (error) => {
     console.error("Socket error:", error);
   });
-  const eventSender = await createWSHost();
 
   setInterval(() => {
     eventSender.send(JSON.stringify({ msg: "Welcome to 22222" }));
