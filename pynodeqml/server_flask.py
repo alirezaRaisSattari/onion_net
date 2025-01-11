@@ -34,21 +34,21 @@ class SocketIOServer:
         """
         @self.socketio.on('connect')
         def handle_connect():
-            # print('Client connected (Node or Browser)')
+            print('Client connected (Node or Browser)')
             emit('message_from_python', {'data': 'Hello from Flask!'})
 
         @self.socketio.on('message_from_node')
         def handle_message_from_node(json_data):
-            # print('Received from Node:', json_data)
+            print('Received from Node:', json_data)
             
             if json_data['data'] == "username":
                 # Wait until data is received from PySide
-                # print("[FLASK] username condition is triggerd!")
+                print("[FLASK] username condition is triggerd!")
                 if not self.data_received_event.is_set():
                     emit('message_from_python', {
                         'data': "Waiting for data from PySide..."
                     })
-                    # print("Waiting for data from PySide...")
+                    print("Waiting for data from PySide...")
                     self.data_received_event.wait()
                     
                 emit('message_from_python', {
@@ -56,12 +56,12 @@ class SocketIOServer:
                     })
             
             elif json_data['data'] == "userlist":
-                # print("[FLASK] userlist condition is triggerd!")
+                print("[FLASK] userlist condition is triggerd!")
                 if not self.data_received_event.is_set():
                     emit('message_from_python', {
                         'data': "Waiting for data from PySide..."
                     })
-                    # print("Waiting for data from PySide...")
+                    print("Waiting for data from PySide...")
                     self.data_received_event.wait()
                     
                 emit('message_from_python', {
