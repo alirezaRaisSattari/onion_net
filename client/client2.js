@@ -3,7 +3,7 @@ const http = require("http");
 const OnionSDK = require("../services/onion-connection-service");
 const { connectToHost, createHost } = require("./webSocket");
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 6001;
 const routerPort = 4000;
 const onionService = new OnionSDK();
 
@@ -28,6 +28,7 @@ const createWSHost = async () => {
 callServer("/roll-dice", { x: 1 });
 setTimeout(() => {
   callServer("/host", { x: 1 });
+  connectToHost(6000);
   connectToHost(5000);
 }, 1000);
 

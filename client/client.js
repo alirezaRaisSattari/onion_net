@@ -4,7 +4,7 @@ const OnionSDK = require("../services/onion-connection-service");
 const WebSocket = require("ws");
 const { connectToHost, createHost } = require("./webSocket");
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 6000;
 const routerPort = 3000;
 
 app.set("view engine", "ejs");
@@ -37,7 +37,8 @@ callServer("/roll-dice", { x: 1 });
 setTimeout(() => {
   callServer("/host", { x: 1 });
 }, 1000);
-// connectToHost(5000);
+
+connectToHost(5001);
 
 // Create an HTTP server
 
