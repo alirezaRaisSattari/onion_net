@@ -38,51 +38,52 @@ const createWSHost = async (eventHandlers) => {
 // }, 1000);
 
 connectToHost(5001);
+setTimeout(() => {
+  // Start the HTTP and WebSocket server
+  server.listen(PORT, async () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+    const socket = io("http://127.0.0.1:5000");
+    const eventSender = await createWSHost({
+      server: (data) => {
+        socket.emit("message_from_node", { data });
+      },
+    });
 
-// Start the HTTP and WebSocket server
-server.listen(PORT, async () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  const socket = io("http://127.0.0.1:5000");
-  const eventSender = await createWSHost({
-    server: (data) => {
-      socket.emit("message_from_node", { data });
-    },
+    // Setup Node console input
+    // const rl = readline.createInterface({
+    //   input: process.stdin,
+    //   output: process.stdout,
+    // });
+
+    // Every time the user types a line in Node console, send it to Python
+    // rl.on("line", (input) => {
+    //   socket.emit("message_from_node", { data: input });
+    // });
+
+    // Handle successful connection
+    socket.on("connect", () => {
+      console.log("Connected to Flask-SocketIO server!");
+      // Optionally send an initial message
+      socket.emit("message_from_node", { data: "Node is connected!" });
+    });
+
+    // Listen for messages from Python
+    socket.on("message_from_python", (message) => {
+      eventSender.send(JSON.stringify({ event: "client", data: message }));
+      console.log("Message from Python:", message.data);
+    });
+
+    // Handle disconnection
+    socket.on("disconnect", () => {
+      console.log("Disconnected from Flask server");
+    });
+
+    socket.on("error", (error) => {
+      console.error("Socket error:", error);
+    });
+
+    // setInterval(() => {
+    //   eventSender.send(JSON.stringify({ msg: "Welcome to 22222" }));
+    // }, 5000);
   });
-
-  // Setup Node console input
-  // const rl = readline.createInterface({
-  //   input: process.stdin,
-  //   output: process.stdout,
-  // });
-
-  // Every time the user types a line in Node console, send it to Python
-  // rl.on("line", (input) => {
-  //   socket.emit("message_from_node", { data: input });
-  // });
-
-  // Handle successful connection
-  socket.on("connect", () => {
-    console.log("Connected to Flask-SocketIO server!");
-    // Optionally send an initial message
-    socket.emit("message_from_node", { data: "Node is connected!" });
-  });
-
-  // Listen for messages from Python
-  socket.on("message_from_python", (message) => {
-    eventSender.send(JSON.stringify({ event: "client", data: message }));
-    console.log("Message from Python:", message.data);
-  });
-
-  // Handle disconnection
-  socket.on("disconnect", () => {
-    console.log("Disconnected from Flask server");
-  });
-
-  socket.on("error", (error) => {
-    console.error("Socket error:", error);
-  });
-
-  // setInterval(() => {
-  //   eventSender.send(JSON.stringify({ msg: "Welcome to 22222" }));
-  // }, 5000);
-});
+}, 1000);
