@@ -37,7 +37,7 @@ const createWSHost = async (eventHandlers) => {
 //   callServer("/host", { x: 1 });
 // }, 1000);
 
-connectToHost(5001);
+// connectToHost(5001);
 setTimeout(() => {
   // Start the HTTP and WebSocket server
   server.listen(PORT, async () => {
@@ -86,4 +86,4 @@ setTimeout(() => {
     //   eventSender.send(JSON.stringify({ msg: "Welcome to 22222" }));
     // }, 5000);
   });
-}, 1000);
+}, 3000);

@@ -73,4 +73,4 @@ setTimeout(() => {
 
     console.log(`Server running on http://localhost:${PORT}`);
   });
-}, 1000);
+}, 3000);
