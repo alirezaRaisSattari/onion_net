@@ -28,7 +28,7 @@ const createWSHost = async () => {
 // callServer("/roll-dice", { x: 1 });
 // const 
 setTimeout(() => {
-  callServer("/host", { x: 1 });
+  // callServer("/host", { x: 1 });
   connectToHost(6000);
   connectToHost(5000);
 }, 1000);
