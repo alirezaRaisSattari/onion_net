@@ -36,8 +36,6 @@ const createWSHost = async (eventHandlers) => {
 // setTimeout(() => {
 //   callServer("/host", { x: 1 });
 // }, 1000);
-
-connectToHost(5001);
 setTimeout(() => {
   // Start the HTTP and WebSocket server
   server.listen(PORT, async () => {
@@ -59,7 +57,7 @@ setTimeout(() => {
     // rl.on("line", (input) => {
     //   socket.emit("message_from_node", { data: input });
     // });
-
+    socket.emit("message_from_node", { data: "username" });
     // Handle successful connection
     socket.on("connect", () => {
       console.log("Connected to Flask-SocketIO server!");
@@ -86,4 +84,4 @@ setTimeout(() => {
     //   eventSender.send(JSON.stringify({ msg: "Welcome to 22222" }));
     // }, 5000);
   });
-}, 1000);
+}, 3000);
