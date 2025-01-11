@@ -8,6 +8,23 @@ const io = require("socket.io-client");
 const readline = require('readline');
 const PORT = process.env.PORT || 6000;
 const routerPort = 3000;
+const { spawn } = require("child_process");
+const pythonProcess = spawn("python", ["../main.py", "5001"]);
+
+// Listen for standard output
+pythonProcess.stdout.on("data", (data) => {
+  console.log(`Output: ${data.toString()}`);
+});
+
+// Listen for standard error
+pythonProcess.stderr.on("data", (data) => {
+  console.error(`Error: ${data.toString()}`);
+});
+
+// Listen for the process to exit
+pythonProcess.on("close", (code) => {
+  console.log(`Process exited with code ${code}`);
+});
 
 app.set("view engine", "ejs");
 const onionService = new OnionSDK();

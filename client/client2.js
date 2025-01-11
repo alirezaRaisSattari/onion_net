@@ -8,6 +8,23 @@ const PORT = process.env.PORT || 6001;
 const routerPort = 4000;
 const readline = require("readline");
 const onionService = new OnionSDK();
+const { spawn } = require("child_process");
+const pythonProcess = spawn("python", ["../main.py", "5000"]);
+
+// Listen for standard output
+pythonProcess.stdout.on("data", (data) => {
+  console.log(`Output: ${data.toString()}`);
+});
+
+// Listen for standard error
+pythonProcess.stderr.on("data", (data) => {
+  console.error(`Error: ${data.toString()}`);
+});
+
+// Listen for the process to exit
+pythonProcess.on("close", (code) => {
+  console.log(`Process exited with code ${code}`);
+});
 
 async function callServer(path, body, method) {
   const x = await onionService.sendRequest(
