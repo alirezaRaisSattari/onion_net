@@ -8,7 +8,7 @@ function getCurrentTime() {
 const connectToHost = (port, eventHandlers) => {
   const ws = new WebSocket("ws://localhost:" + port);
   function sendEvent(body) {
-    ws.send(JSON.stringify(body));
+    ws.send(body);
   }
 
   ws.onopen = () => {
