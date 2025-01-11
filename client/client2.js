@@ -9,7 +9,7 @@ const routerPort = 4000;
 const readline = require("readline");
 const onionService = new OnionSDK();
 const { spawn } = require("child_process");
-const pythonProcess = spawn("python", ["../pynodeqml/main.py", "5000"]);
+const pythonProcess = spawn("python", ["../pynodeqml/main.py", "5001"]);
 
 async function callServer(path, body, method) {
   const x = await onionService.sendRequest(
@@ -33,19 +33,19 @@ const createWSHost = async () => {
 server.listen(PORT, async () => {
   const socket = io("http://127.0.0.1:5001");
   // Setup Node console input
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
+  // const rl = readline.createInterface({
+  //   input: process.stdin,
+  //   output: process.stdout,
+  // });
   const ws = connectToHost(6000, {
     client: (data) => {
       socket.emit("message_from_node", { data });
     },
   });
   // Every time the user typesconst routerPort = 4000; a line in Node console, send it to Python
-  rl.on("line", (input) => {
-    socket.emit("message_from_node", { data: input });
-  });
+  // rl.on("line", (input) => {
+  //   socket.emit("message_from_node", { data: input });
+  // });
 
   // Handle successful connection
   socket.on("connect", () => {

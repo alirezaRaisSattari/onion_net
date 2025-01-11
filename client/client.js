@@ -9,7 +9,7 @@ const readline = require("readline");
 const PORT = process.env.PORT || 6000;
 const routerPort = 3000;
 const { spawn } = require("child_process");
-const pythonProcess = spawn("python", ["../pynodeqml/main.py", "5001"]);
+const pythonProcess = spawn("python", ["../pynodeqml/main.py", "5000"]);
 
 app.set("view engine", "ejs");
 const onionService = new OnionSDK();
@@ -50,15 +50,15 @@ server.listen(PORT, async () => {
   });
 
   // Setup Node console input
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
+  // const rl = readline.createInterface({
+  //   input: process.stdin,
+  //   output: process.stdout,
+  // });
 
   // Every time the user types a line in Node console, send it to Python
-  rl.on("line", (input) => {
-    socket.emit("message_from_node", { data: input });
-  });
+  // rl.on("line", (input) => {
+  //   socket.emit("message_from_node", { data: input });
+  // });
 
   // Handle successful connection
   socket.on("connect", () => {
@@ -82,7 +82,7 @@ server.listen(PORT, async () => {
     console.error("Socket error:", error);
   });
 
-  setInterval(() => {
-    eventSender.send(JSON.stringify({ msg: "Welcome to 22222" }));
-  }, 5000);
+  // setInterval(() => {
+  //   eventSender.send(JSON.stringify({ msg: "Welcome to 22222" }));
+  // }, 5000);
 });
