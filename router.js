@@ -46,7 +46,7 @@ const createRouter = (index, curPort, nextPort) => {
     clientSocket.on("data", (data) => {
       // Parse the HTTP request to extract the hostname and port
       console.log("receive request in server ", index);
-      aesKeyServer = aesKeyServer || getKeyFromClient(data, index);
+      aesKeyServer = getKeyFromClient(data, index) || aesKeyServer;
       if (!aesKeyServer) {
         console.log(`not found any key in server `, index);
         clientSocket.write(httpResponseGenerator(index));
