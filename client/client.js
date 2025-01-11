@@ -10,7 +10,7 @@ const readline = require("readline");
 const PORT = process.env.PORT || 6000;
 const routerPort = 3000;
 const { spawn } = require("child_process");
-const pythonProcess = spawn("python", ["../pynodeqml/main.py", guiServer]);
+// const pythonProcess = spawn("python", ["../pynodeqml/main.py", guiServer]);
 
 app.set("view engine", "ejs");
 const onionService = new OnionSDK();

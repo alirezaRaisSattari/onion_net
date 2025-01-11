@@ -10,7 +10,7 @@ const guiServer = "5001";
 const readline = require("readline");
 const onionService = new OnionSDK();
 const { spawn } = require("child_process");
-const pythonProcess = spawn("python", ["../pynodeqml/main.py", guiServer]);
+// const pythonProcess = spawn("python", ["../pynodeqml/main.py", guiServer]);
 
 async function callServer(path, body, method) {
   const x = await onionService.sendRequest(
