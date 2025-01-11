@@ -25,7 +25,8 @@ const createWSHost = async () => {
   await callServer("/host", { ip: "localhost", port: PORT }, "POST");
 };
 
-callServer("/roll-dice", { x: 1 });
+// callServer("/roll-dice", { x: 1 });
+// const 
 setTimeout(() => {
   callServer("/host", { x: 1 });
   connectToHost(6000);

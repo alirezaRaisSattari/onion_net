@@ -10,11 +10,6 @@ const routerPort = 3000;
 app.set("view engine", "ejs");
 const onionService = new OnionSDK();
 
-function getCurrentTime() {
-  const now = new Date();
-  return now.toTimeString();
-}
-
 async function callServer(path, body, method) {
   const x = await onionService.sendRequest(
     PORT,
@@ -33,10 +28,10 @@ const createWSHost = async () => {
   return eventSender;
 };
 
-callServer("/roll-dice", { x: 1 });
-setTimeout(() => {
-  callServer("/host", { x: 1 });
-}, 1000);
+// callServer("/roll-dice", { x: 1 });
+// setTimeout(() => {
+//   callServer("/host", { x: 1 });
+// }, 1000);
 
 connectToHost(5001);
 
