@@ -4,12 +4,13 @@ const OnionSDK = require("../services/onion-connection-service");
 const WebSocket = require("ws");
 const { connectToHost, createHost } = require("./webSocket");
 const app = express();
+const guiServer = "5000";
 const io = require("socket.io-client");
 const readline = require("readline");
 const PORT = process.env.PORT || 6000;
 const routerPort = 3000;
 const { spawn } = require("child_process");
-const pythonProcess = spawn("python", ["../pynodeqml/main.py", "5000"]);
+const pythonProcess = spawn("python", ["../pynodeqml/main.py", guiServer]);
 
 app.set("view engine", "ejs");
 const onionService = new OnionSDK();
@@ -42,7 +43,7 @@ setTimeout(() => {
   // Start the HTTP and WebSocket server
   server.listen(PORT, async () => {
     console.log(`Server running on http://localhost:${PORT}`);
-    const socket = io("http://127.0.0.1:5000");
+    const socket = io("http://127.0.0.1:" + guiServer);
     const eventSender = await createWSHost({
       server: (data) => {
         console.log("message from client2: ", data);
