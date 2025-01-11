@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const OnionSDK = require("../services/onion-connection-service");
 const { connectToHost, createHost } = require("./webSocket");
+const io = require("socket.io-client");
 const app = express();
 const PORT = process.env.PORT || 6001;
 const routerPort = 4000;
@@ -26,14 +27,46 @@ const createWSHost = async () => {
 };
 
 // callServer("/roll-dice", { x: 1 });
-// const 
+// const
 setTimeout(() => {
-  callServer("/host", { x: 1 });
+  // callServer("/host", { x: 1 });
   connectToHost(6000);
-  connectToHost(5000);
 }, 1000);
 
 // Start the HTTP and WebSocket server
 server.listen(PORT, () => {
+  const socket = io("http://127.0.0.1:5001");
+  // Setup Node console input
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  // Every time the user typesconst routerPort = 4000; a line in Node console, send it to Python
+  rl.on("line", (input) => {
+    socket.emit("message_from_node", { data: input });
+  });
+
+  // Handle successful connection
+  socket.on("connect", () => {
+    console.log("Connected to Flask-SocketIO server!");
+    // Optionally send an initial message
+    socket.emit("message_from_node", { data: "Node is connected!" });
+  });
+
+  // Listen for messages from Python
+  socket.on("message_from_python", (message) => {
+    console.log("Message from Python:", message.data);
+  });
+
+  // Handle disconnection
+  socket.on("disconnect", () => {
+    console.log("Disconnected from Flask server");
+  });
+
+  socket.on("error", (error) => {
+    console.error("Socket error:", error);
+  });
+
   console.log(`Server running on http://localhost:${PORT}`);
 });
