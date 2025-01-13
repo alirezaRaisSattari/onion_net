@@ -49,7 +49,7 @@ setTimeout(() => {
         callServer("/roll-dice", { x: 1 });
         const res = Math.floor(Math.random() * 6);
         console.log("rol client1: ", res);
-        socket.emit("message_from_node", JSON.stringify({ data: data + res }));
+        socket.emit("message_from_node", JSON.str({ data, dice: res }));
       },
       server_chat: (data) => {
         console.log("massage from other client: ", data);
@@ -67,7 +67,7 @@ setTimeout(() => {
       // Optionally send an initial message
       socket.emit("message_from_node", { data: "Node is connected!" });
     });
-
+    
     // Listen for messages from Python
     socket.on("message_from_python", (message) => {
       console.log("Message from Python:", message.data);
