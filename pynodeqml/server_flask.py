@@ -54,8 +54,10 @@ class SocketIOServer:
                     self.data_received_event.wait()
                     
                 emit('message_from_python', {
-                    'data': f"Python received: {json_data['data']} and PySide provided: {self.received_data}"
+                    'data': f"Python received: {json_data['data']}, {json_data['dice']} and PySide provided: {self.received_data}"
                     })
+                
+            
             
             elif json_data['data'] == "userlist":
                 print("[FLASK] userlist condition is triggerd!")

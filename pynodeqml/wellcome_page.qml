@@ -6,8 +6,8 @@ import User_registeration 1.0
 
 ApplicationWindow {
     id: wellcome_page
-    width: 500
-    height: 700
+    width: 200
+    height: 300
     visible: true
     property bool is_registerd: true
     property bool is_activeuserlist_fethced: false
@@ -26,7 +26,7 @@ ApplicationWindow {
             id: greeting_message_rectangle
             Layout.fillWidth: true
             Layout.preferredHeight: parent.height * 0.33
-            color: "#cb6666"
+            color: "red"
             Text {
                 text: "wellcome!"
                 anchors.fill: parent
