@@ -47,9 +47,9 @@ setTimeout(() => {
     const eventSender = await createWSHost({
       server: (data) => {
         callServer("/roll-dice", { x: 1 });
-        const res = 5;
-        console.log("rollllll client1: ", res);
-        socket.emit("message_from_node", { data: data + res });
+        const res = Math.floor(Math.random() * 6);
+        console.log("rol client1: ", res);
+        socket.emit("message_from_node", data + ",dice:" + res);
       },
       server_chat: (data) => {
         console.log("massage from other client: ", data);
