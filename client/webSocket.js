@@ -16,10 +16,10 @@ const connectToHost = (port, eventHandlers) => {
     sendEvent(JSON.stringify({ event: "greet", data: "Hello, Server!" }));
   };
 
-  ws.onmessage = async (event) => {
+  ws.onmessage = (event) => {
     const msg = JSON.parse(event.data);
     console.log("received event as client:", msg);
-    await handleReceivedMessages(msg, eventHandlers);
+    handleReceivedMessages(msg, eventHandlers);
   };
 
   ws.onclose = () => {
@@ -37,10 +37,10 @@ const createHost = (wss, eventHandlers) =>
     wss.on("connection", (ws) => {
       console.log("New WebSocket connection");
 
-      ws.on("message", async (message) => {
+      ws.on("message", (message) => {
         const parsedMsg = JSON.parse(message);
         console.log(`received event as host: ${parsedMsg}`);
-        await handleReceivedMessages(parsedMsg, eventHandlers);
+        handleReceivedMessages(parsedMsg, eventHandlers);
       });
       ws.on("error", (message) => {
         reject(message);
@@ -51,9 +51,9 @@ const createHost = (wss, eventHandlers) =>
   });
 
 // Function to handle messages received from clients
-async function handleReceivedMessages(msg, eventHandlers) {
+function handleReceivedMessages(msg, eventHandlers) {
   if (msg.event && eventHandlers[msg.event]) {
-    await eventHandlers[msg.event](msg.data);
+    eventHandlers[msg.event](msg.data);
   } else {
     console.log("Unknown event received in client:", msg.event);
   }

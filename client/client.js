@@ -7,6 +7,7 @@ const app = express();
 const guiServer = "5000";
 const io = require("socket.io-client");
 const readline = require("readline");
+const { stdin, stdout } = require("process");
 const PORT = process.env.PORT || 6000;
 const routerPort = 3000;
 // const { spawn } = require("child_process");
@@ -44,8 +45,9 @@ setTimeout(() => {
     console.log(`Server running on http://localhost:${PORT}`);
     const socket = io("http://127.0.0.1:" + guiServer);
     const eventSender = await createWSHost({
-      server: async (data) => {
-        const res = await callServer("/roll-dice", { x: 1 });
+      server: (data) => {
+        callServer("/roll-dice", { x: 1 });
+        const res = 5;
         console.log("rollllll client1: ", res);
         socket.emit("message_from_node", { data: data + res });
       },
@@ -53,11 +55,9 @@ setTimeout(() => {
         console.log("massage from other client: ", data);
       },
     });
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
-    rl.question("you can chat here: ", (input) => {
+    const rl = readline.createInterface({ input: stdin, output: stdout });
+    console.log("You can chat here:");
+    rl.on("line", (input) => {
       eventSender.send(JSON.stringify({ event: "client_chat", data: input }));
     });
     socket.emit("message_from_node", { data: "username" });

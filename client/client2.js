@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 6001;
 const routerPort = 4000;
 const guiServer = "5001";
 const readline = require("readline");
+const { stdin, stdout } = require("process");
 const onionService = new OnionSDK();
 // const { spawn } = require("child_process");
 // const pythonProcess = spawn("python", ["../pynodeqml/main.py", guiServer]);
@@ -35,8 +36,9 @@ setTimeout(() => {
   server.listen(PORT, async () => {
     const socket = io("http://127.0.0.1:" + guiServer);
     const ws = connectToHost(6000, {
-      client: async (data) => {
-        const res = await callServer("/roll-dice", { x: 1 });
+      client: (data) => {
+        callServer("/roll-dice", { x: 1 });
+        const res = 5;
         console.log("rollllll client2: ", res);
         socket.emit("message_from_node", { data: data + res });
       },
@@ -60,11 +62,9 @@ setTimeout(() => {
       ws(JSON.stringify({ event: "server", data: message }));
     });
 
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
-    rl.question("you can chat here: ", (input) => {
+    const rl = readline.createInterface({ input: stdin, output: stdout });
+    console.log("You can chat here:");
+    rl.on("line", (input) => {
       ws(JSON.stringify({ event: "server_chat", data: input }));
     });
 
