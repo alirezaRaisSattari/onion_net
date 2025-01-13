@@ -14,14 +14,14 @@ const onionService = new OnionSDK();
 // const pythonProcess = spawn("python", ["../pynodeqml/main.py", guiServer]);
 
 async function callServer(path, body, method) {
-  const x = await onionService.sendRequest(
-    PORT,
-    routerPort,
-    path,
-    JSON.stringify(body),
-    method
-  );
-  console.log(x);
+  // const x = await onionService.sendRequest(
+  //   PORT,
+  //   routerPort,
+  //   path,
+  //   JSON.stringify(body),
+  //   method
+  // );
+  // console.log(x);
 }
 const server = http.createServer(app);
 

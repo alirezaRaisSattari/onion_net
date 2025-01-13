@@ -13,6 +13,7 @@ class user_register(QObject):
         self.active_users_list = []
         self.username_changed.connect(self.new_username_recived)  # Connect signal to slot    
         self.active_users_asked.connect(self.fetch_users_from_server)
+        # self.flask_server = SocetIOServer(host='127.0.0.1', port=5000, debug=True)
         self.flask_server = SocketIOServer(host='127.0.0.1', port=5000, secret_key='supersecret', debug=True)
         # self.flask_server.start()
         self.server_thread = threading.Thread(target=self.flask_server.start, daemon=True)

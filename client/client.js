@@ -16,14 +16,14 @@ const routerPort = 3000;
 const onionService = new OnionSDK();
 
 async function callServer(path, body, method) {
-  const x = await onionService.sendRequest(
-    PORT,
-    routerPort,
-    path,
-    JSON.stringify(body),
-    method
-  );
-  console.log(x);
+  // const x = await onionService.sendRequest(
+  //   PORT,
+  //   routerPort,
+  //   path,
+  //   JSON.stringify(body),
+  //   method
+  // );
+  // console.log(x);
 }
 const server = http.createServer(app);
 const createWSHost = async (eventHandlers) => {
@@ -67,7 +67,7 @@ setTimeout(() => {
       // Optionally send an initial message
       socket.emit("message_from_node", { data: "Node is connected!" });
     });
-
+    
     // Listen for messages from Python
     socket.on("message_from_python", (message) => {
       console.log("Message from Python:", message.data);
