@@ -42,7 +42,7 @@ setTimeout(() => {
         console.log("rol client2: ", res);
         socket.emit(
           "message_from_node",
-          JSON.stringify({ data: { ...data, dice: res } })
+          JSON.stringify({ ...data, dice: res })
         );
       },
       client_chat: (data) => {
