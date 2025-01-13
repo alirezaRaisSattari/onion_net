@@ -40,9 +40,13 @@ setTimeout(() => {
     //   output: process.stdout,
     // });
     const ws = connectToHost(6000, {
-      client: (data) => {
-        console.log("receive form client1: ", data);
-        socket.emit("message_from_node", { data });
+      client: async (data) => {
+        const res = await callServer("/roll-dice", { x: 1 });
+        console.log("rollllll client2: ", res);
+        socket.emit("message_from_node", { data: data + res });
+      },
+      client_chat: (data) => {
+        console.log("massage from other client: ", data);
       },
     });
     socket.emit("message_from_node", { data: "username" });
@@ -59,6 +63,15 @@ setTimeout(() => {
       console.log("Message from Python:", message.data);
       console.log("calling client2");
       ws(JSON.stringify({ event: "server", data: message }));
+    });
+
+    const readline = require("readline");
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    rl.question("you can chat here: ", (input) => {
+      ws(JSON.stringify({ event: "server_chat", data: input }));
     });
 
     // Handle disconnection

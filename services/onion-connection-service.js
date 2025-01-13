@@ -9,7 +9,7 @@ class OnionSDK {
     this.aesKeyServer3 = crypto.randomBytes(32).toString("hex");
   }
 
-  httpDataGenerator(path, method, address, body) {
+  httpDataGenerator(path, method, address, body, isInit = false) {
     const requestOptions = {
       host: "localhost",
       port: 8000,
@@ -38,8 +38,9 @@ class OnionSDK {
       "",
       body,
     ];
-
-    const request = requestLines.join("\r\n");
+    const request = isInit
+      ? `key1:${this.aesKeyServer1},key2:${this.aesKeyServer2},key3:${this.aesKeyServer3}`
+      : requestLines.join("\r\n");
     return request;
   }
 
@@ -55,10 +56,22 @@ class OnionSDK {
       const encrypted3 =
         encryptionCount > 3
           ? encryptDataWithAES(
-              this.httpDataGenerator(path, method, clientAddress, body),
+              this.httpDataGenerator(
+                path,
+                method,
+                clientAddress,
+                body,
+                encryptionCount < 4
+              ),
               this.aesKeyServer3
             )
-          : this.httpDataGenerator(path, method, clientAddress, body);
+          : this.httpDataGenerator(
+              path,
+              method,
+              clientAddress,
+              body,
+              encryptionCount < 4
+            );
       const encrypted2 =
         encryptionCount > 2
           ? encryptDataWithAES(encrypted3, this.aesKeyServer2)
