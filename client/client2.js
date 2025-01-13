@@ -40,10 +40,7 @@ setTimeout(() => {
         callServer("/roll-dice", { x: 1 });
         const res = Math.floor(Math.random() * 6);
         console.log("rol client2: ", res);
-        socket.emit(
-          "message_from_node",
-          JSON.stringify({ ...data, dice: res })
-        );
+        ws("message_from_node", JSON.stringify({ ...data, dice: res }));
       },
       client_chat: (data) => {
         console.log("massage from other client: ", data);
