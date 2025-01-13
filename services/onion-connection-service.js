@@ -9,7 +9,7 @@ class OnionSDK {
     this.aesKeyServer3 = crypto.randomBytes(32).toString("hex");
   }
 
-  httpDataGenerator(path, method, address, body) {
+  httpDataGenerator(path, method, address, body, isInit = false) {
     const requestOptions = {
       host: "localhost",
       port: 8000,
@@ -38,8 +38,9 @@ class OnionSDK {
       "",
       body,
     ];
-
-    const request = requestLines.join("\r\n");
+    const request = isInit
+      ? `key1:${this.aesKeyServer1},key2:${this.aesKeyServer2},key3:${this.aesKeyServer3}`
+      : requestLines.join("\r\n");
     return request;
   }
 
@@ -55,10 +56,22 @@ class OnionSDK {
       const encrypted3 =
         encryptionCount > 3
           ? encryptDataWithAES(
-              this.httpDataGenerator(path, method, clientAddress, body),
+              this.httpDataGenerator(
+                path,
+                method,
+                clientAddress,
+                body,
+                encryptionCount < 4
+              ),
               this.aesKeyServer3
             )
-          : this.httpDataGenerator(path, method, clientAddress, body);
+          : this.httpDataGenerator(
+              path,
+              method,
+              clientAddress,
+              body,
+              encryptionCount < 4
+            );
       const encrypted2 =
         encryptionCount > 2
           ? encryptDataWithAES(encrypted3, this.aesKeyServer2)
@@ -98,13 +111,13 @@ class OnionSDK {
           decrypted3 = data.toString();
         }
         setTimeout(() => {
-          const [_headerPart, bodyPart] = decrypted3
-            .toString()
-            .split("\r\n\r\n");
-          console.log({ res: bodyPart });
           try {
-            const index = JSON.parse(bodyPart)?.index;
-            if (encryptionCount < 4 || index < 4) {
+            const bodyPart = decrypted3.toString();
+            let index;
+            try {
+              index = JSON.parse(bodyPart)?.index;
+            } catch {}
+            if (encryptionCount < 4 || (index && index < 4)) {
               this.sendRequest(
                 clientAddress,
                 destPort,
@@ -116,11 +129,14 @@ class OnionSDK {
                 .then(resolve)
                 .catch(reject);
             } else {
+              const [_headerPart, bodyPart] = decrypted3
+                .toString()
+                .split("\r\n\r\n");
               resolve(bodyPart || decrypted3); // Resolve the Promise when it reaches the else block
             }
           } catch (error) {
-            console.error("error in server: ", bodyPart);
-            reject(bodyPart || decrypted3); // Resolve the Promise when it reaches the else block
+            console.error("error in server: ", error, decrypted3);
+            reject(decrypted3); // Resolve the Promise when it reaches the else block
           }
         }, 10);
         serverSocket.end(); // Close the connection after receiving the response

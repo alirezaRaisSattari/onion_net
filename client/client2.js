@@ -9,7 +9,7 @@ const routerPort = 4000;
 const guiServer = "5001";
 const readline = require("readline");
 const onionService = new OnionSDK();
-const { spawn } = require("child_process");
+// const { spawn } = require("child_process");
 // const pythonProcess = spawn("python", ["../pynodeqml/main.py", guiServer]);
 
 async function callServer(path, body, method) {
@@ -34,15 +34,14 @@ setTimeout(() => {
   // Start the HTTP and WebSocket server
   server.listen(PORT, async () => {
     const socket = io("http://127.0.0.1:" + guiServer);
-    // Setup Node console input
-    // const rl = readline.createInterface({
-    //   input: process.stdin,
-    //   output: process.stdout,
-    // });
     const ws = connectToHost(6000, {
-      client: (data) => {
-        console.log("receive form client1: ", data);
-        socket.emit("message_from_node", { data });
+      client: async (data) => {
+        const res = await callServer("/roll-dice", { x: 1 });
+        console.log("rollllll client2: ", res);
+        socket.emit("message_from_node", { data: data + res });
+      },
+      client_chat: (data) => {
+        console.log("massage from other client: ", data);
       },
     });
     socket.emit("message_from_node", { data: "username" });
@@ -59,6 +58,14 @@ setTimeout(() => {
       console.log("Message from Python:", message.data);
       console.log("calling client2");
       ws(JSON.stringify({ event: "server", data: message }));
+    });
+
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    rl.question("you can chat here: ", (input) => {
+      ws(JSON.stringify({ event: "server_chat", data: input }));
     });
 
     // Handle disconnection
