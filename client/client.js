@@ -63,7 +63,7 @@ setTimeout(() => {
     rl.on("line", (input) => {
       eventSender.send(JSON.stringify({ event: "client_chat", data: input }));
     });
-    socket.emit("message_from_node", { data: "username" });
+    // socket.emit("message_from_node", { data: "username" });
     // Handle successful connection
     socket.on("connect", () => {
       console.log("Connected to Flask-SocketIO server!");
