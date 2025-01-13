@@ -9,13 +9,7 @@ const {
 function httpResponseGenerator(index) {
   const jsonResponse = JSON.stringify({ index });
   console.log(jsonResponse);
-  return [
-    "HTTP/1.1 200 OK",
-    "Content-Type: application/json",
-    `Content-Length: ${jsonResponse.length}`,
-    "",
-    jsonResponse,
-  ].join("\r\n");
+  return jsonResponse;
 }
 
 const extractKeyValue = (data, key) => {

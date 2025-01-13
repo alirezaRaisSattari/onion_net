@@ -111,13 +111,13 @@ class OnionSDK {
           decrypted3 = data.toString();
         }
         setTimeout(() => {
-          const [_headerPart, bodyPart] = decrypted3
-            .toString()
-            .split("\r\n\r\n");
-          console.log({ res: bodyPart });
           try {
-            const index = JSON.parse(bodyPart)?.index;
-            if (encryptionCount < 4 || index < 4) {
+            const bodyPart = decrypted3.toString();
+            let index;
+            try {
+              index = JSON.parse(bodyPart)?.index;
+            } catch {}
+            if (encryptionCount < 4 || (index && index < 4)) {
               this.sendRequest(
                 clientAddress,
                 destPort,
@@ -129,11 +129,14 @@ class OnionSDK {
                 .then(resolve)
                 .catch(reject);
             } else {
+              const [_headerPart, bodyPart] = decrypted3
+                .toString()
+                .split("\r\n\r\n");
               resolve(bodyPart || decrypted3); // Resolve the Promise when it reaches the else block
             }
           } catch (error) {
-            console.error("error in server: ", bodyPart);
-            reject(bodyPart || decrypted3); // Resolve the Promise when it reaches the else block
+            console.error("error in server: ", error, decrypted3);
+            reject(decrypted3); // Resolve the Promise when it reaches the else block
           }
         }, 10);
         serverSocket.end(); // Close the connection after receiving the response

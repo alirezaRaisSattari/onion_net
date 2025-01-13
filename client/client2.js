@@ -9,8 +9,8 @@ const routerPort = 4000;
 const guiServer = "5001";
 const readline = require("readline");
 const onionService = new OnionSDK();
-const { spawn } = require("child_process");
-const pythonProcess = spawn("python", ["../pynodeqml/main.py", guiServer]);
+// const { spawn } = require("child_process");
+// const pythonProcess = spawn("python", ["../pynodeqml/main.py", guiServer]);
 
 async function callServer(path, body, method) {
   const x = await onionService.sendRequest(
@@ -34,11 +34,6 @@ setTimeout(() => {
   // Start the HTTP and WebSocket server
   server.listen(PORT, async () => {
     const socket = io("http://127.0.0.1:" + guiServer);
-    // Setup Node console input
-    // const rl = readline.createInterface({
-    //   input: process.stdin,
-    //   output: process.stdout,
-    // });
     const ws = connectToHost(6000, {
       client: async (data) => {
         const res = await callServer("/roll-dice", { x: 1 });
@@ -65,7 +60,6 @@ setTimeout(() => {
       ws(JSON.stringify({ event: "server", data: message }));
     });
 
-    const readline = require("readline");
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
