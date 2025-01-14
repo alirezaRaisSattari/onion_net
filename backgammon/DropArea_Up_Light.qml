@@ -1,5 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Shapes 1.8
+import Pyside_handler 1.0
+
 
 Rectangle {
     id: triangleContainer
@@ -13,6 +15,10 @@ Rectangle {
     property int marble_numbers: 0                  // Number of marbles
     property var draggableList: []                    // List of marble identifiers
     property string current_color: "None" 
+
+    Pyside_handler_class {
+        id: handler
+    }
     
     Shape {
         id: triangle
@@ -90,6 +96,9 @@ Rectangle {
                             drag.source.x = targetPos.x + (triangleContainer.width - drag.source.width) / 2;
                             drag.source.y = targetPos.y + triangleContainer.height - (drag.source.height);
 
+                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+
+
                             console.log("Current draggable list:", draggableList);
 
 
@@ -98,6 +107,8 @@ Rectangle {
                         else {
                             draggableList.push(marbleName);
                             console.log("Added draggable:", marbleName, "to drop area:", dropName);
+                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+
                         } 
                     }
                     else {
@@ -111,6 +122,8 @@ Rectangle {
                         else {
                             draggableList.push(marbleName);
                             console.log("Added draggable:", marbleName, "to drop area:", dropName);
+                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+
                         }  
                     }
                 }
@@ -140,10 +153,14 @@ Rectangle {
                             }
                             draggableList.push(marbleName); // Add the Light marble
                             current_color = "Light"; // Update the current color
+                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+
                         }
                         else {
                             draggableList.push(marbleName);
                             console.log("Added draggable:", marbleName, "to drop area:", dropName);
+                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+
                         } 
                     }
                     else {
@@ -155,6 +172,8 @@ Rectangle {
                             return
                         }
                         else {
+                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+
                             draggableList.push(marbleName);
                             console.log("Added draggable:", marbleName, "to drop area:", dropName);
                         }  
@@ -168,6 +187,8 @@ Rectangle {
                     current_color = "Dark";
                 }
                 draggableList.push(marbleName);
+                handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+
                 console.log("Added draggable:", marbleName, "to drop area:", dropName);
             }
 

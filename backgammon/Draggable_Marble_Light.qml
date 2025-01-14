@@ -6,9 +6,11 @@ Rectangle {
     height: 100
     color: "transparent"
 
-    property bool isTurnProperty: false
+    property bool isTurnProperty: false // Determines if it's this marble's turn
+    property bool isYoursProperty: false // Determines if the marble type belongs to the player
 
     property alias is_turn: creamMarble.isTurnProperty
+    property alias is_yours: creamMarble.isYoursProperty
     property alias dragKeys: creamMarble.dragKeysProperty
 
     property string dragKeysProperty: ""
@@ -33,18 +35,25 @@ Rectangle {
         hoverEnabled: true
         id: dragArea
         anchors.fill: parent
-        drag.target: parent
+        drag.target: (is_turn && is_yours) ? parent : null // Drag only if it's "yours" and "your turn"
+
         onReleased: {
             if (dragArea.drag.active) {
                 console.log("Releasing drag; calling Drag.drop()");
                 parent.Drag.drop();
             }
         }
+
         onPressed: {
+            if (!creamMarble.is_turn || !creamMarble.is_yours) {
+                console.log("This marble is not yours or not your turn; cannot drag.");
+                return;
+            }
             // Store the current position before dragging
             creamMarble.previousX = creamMarble.x;
             creamMarble.previousY = creamMarble.y;
         }
+    
 
         // Main Circle with Gradient
         Rectangle {
