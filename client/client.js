@@ -46,15 +46,16 @@ setTimeout(() => {
     const socket = io("http://127.0.0.1:" + guiServer);
     const eventSender = await createWSHost({
       server: (data) => {
+        console.log("calling pyyyyyyy");
         callServer("/roll-dice", { x: 1 });
         const res = Math.floor(Math.random() * 2) + 1;
-        console.log("rol client1: ", res);
+        console.log("xxxxyyyyyyy", data);
         socket.emit(
           "message_from_node",
           JSON.stringify({
-            ...data,
-            dice1: res,
-            dice2: res == 3 ? res - 1 : res + 1,
+            data: data + " dice" + res + res == 3 ? res - 1 : res + 1,
+            // dice1: res,
+            // dice2: res == 3 ? res - 1 : res + 1,
           })
         );
       },

@@ -39,11 +39,11 @@ setTimeout(() => {
       client: (data) => {
         callServer("/roll-dice", { x: 1 });
         const res = Math.floor(Math.random() * 2) + 1;
-        console.log("rol client2: ", res);
+        console.log("xxxxyyyyyyy", data);
         ws(
           "message_from_node",
           JSON.stringify({
-            ...data,
+            data: data + " dice" + res + res == 3 ? res - 1 : res + 1,
             dice1: res,
             dice2: res == 3 ? res - 1 : res + 1,
           })
@@ -66,7 +66,7 @@ setTimeout(() => {
     socket.on("message_from_python", (message) => {
       console.log("Message from Python:", message.data);
       console.log("calling client2");
-      ws(JSON.stringify({ event: "server", data: message }));
+      ws(JSON.stringify({ event: "server", data: message.data }));
     });
 
     const rl = readline.createInterface({ input: stdin, output: stdout });

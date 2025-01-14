@@ -38,9 +38,14 @@ const createHost = (wss, eventHandlers) =>
       console.log("New WebSocket connection");
 
       ws.on("message", (message) => {
-        // const parsedMsg = JSON.parse(message);
+        let parsedMsg;
+        try {
+          parsedMsg = JSON.parse(message);
+        } catch {
+          parsedMsg = message;
+        }
         console.log(`received event as host: ${message}`);
-        // handleReceivedMessages(parsedMsg, eventHandlers);
+        handleReceivedMessages(parsedMsg, eventHandlers);
       });
       ws.on("error", (message) => {
         reject(message);
@@ -52,6 +57,7 @@ const createHost = (wss, eventHandlers) =>
 
 // Function to handle messages received from clients
 function handleReceivedMessages(msg, eventHandlers) {
+  console.log("receiveMsg and call: " + msg.event);
   if (msg.event && eventHandlers[msg.event]) {
     eventHandlers[msg.event](msg.data);
   } else {
