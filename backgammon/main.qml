@@ -11,6 +11,11 @@ ApplicationWindow {
     height: 600
     color: "#8B5A2B" // Background color for the entire window
 
+    Component.onCompleted: {
+        // Ensure this is properly defined in the backend and accessible
+        // pyside_backend.request_opponent_move_backend = "get the opponent move";
+    }
+
     function parseMessage(message) {
     // Regular expression to capture marbles, positions, and dice values
         var regex = /moved\s+(\S+)\s+to\s+(\S+)\s+and\s+(\S+)\s+to\s+(\S+)\s+dice(\d)(\d)/;

@@ -32,11 +32,14 @@ class Pyside_Game_Handler(QObject):
             print(f"Message to send: {msg}")
             self.my_moves.clear()  # Clear the move list after use
             self.flask_server.receive_data_from_pyside(msg)
+            self.set_request("")
+            
 
         self.move_string_changed.emit()  # Emit the signal when the value changes
     
     def none_get(self):
-        self.opponent_move_request = "moved Marble_Dark_2 to B3 and Marble_Light_3 to B7 dice34" 
+        # self.opponent_move_request = "moved Marble_Dark_2 to B3 and Marble_Light_3 to B7 dice34" 
+        self.opponent_move_request = "moved None to None and None to B7 None" 
     
     def get_request(self):
         print("[PYSIDE] get_move_string func triggered")
