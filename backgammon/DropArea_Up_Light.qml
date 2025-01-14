@@ -96,7 +96,7 @@ Rectangle {
                             drag.source.x = targetPos.x + (triangleContainer.width - drag.source.width) / 2;
                             drag.source.y = targetPos.y + triangleContainer.height - (drag.source.height);
 
-                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+                            handler.move_string_backend = marbleName + " to " + dropName//////////////////////////////////////////////////////////////////
 
 
                             console.log("Current draggable list:", draggableList);
@@ -107,7 +107,7 @@ Rectangle {
                         else {
                             draggableList.push(marbleName);
                             console.log("Added draggable:", marbleName, "to drop area:", dropName);
-                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+                            handler.move_string_backend = marbleName + " to " + dropName//////////////////////////////////////////////////////////////////
 
                         } 
                     }
@@ -122,7 +122,7 @@ Rectangle {
                         else {
                             draggableList.push(marbleName);
                             console.log("Added draggable:", marbleName, "to drop area:", dropName);
-                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+                            handler.move_string_backend = marbleName + " to " + dropName//////////////////////////////////////////////////////////////////
 
                         }  
                     }
@@ -153,13 +153,13 @@ Rectangle {
                             }
                             draggableList.push(marbleName); // Add the Light marble
                             current_color = "Light"; // Update the current color
-                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+                            handler.move_string_backend = marbleName + " to " + dropName//////////////////////////////////////////////////////////////////
 
                         }
                         else {
                             draggableList.push(marbleName);
                             console.log("Added draggable:", marbleName, "to drop area:", dropName);
-                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+                            handler.move_string_backend = marbleName + " to " + dropName//////////////////////////////////////////////////////////////////
 
                         } 
                     }
@@ -172,7 +172,7 @@ Rectangle {
                             return
                         }
                         else {
-                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+                            handler.move_string_backend = marbleName + " to " + dropName//////////////////////////////////////////////////////////////////
 
                             draggableList.push(marbleName);
                             console.log("Added draggable:", marbleName, "to drop area:", dropName);
@@ -187,7 +187,7 @@ Rectangle {
                     current_color = "Dark";
                 }
                 draggableList.push(marbleName);
-                handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+                handler.move_string_backend = marbleName + " to " + dropName//////////////////////////////////////////////////////////////////
 
                 console.log("Added draggable:", marbleName, "to drop area:", dropName);
             }

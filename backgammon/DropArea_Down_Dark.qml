@@ -85,7 +85,7 @@ Rectangle {
                             draggableList.push(marbleName); // Add the Dark marble
                             current_color = "Dark"; // Update the current color
 
-                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+                            handler.move_string_backend = marbleName + " to " + dropName//////////////////////////////////////////////////////////////////
 
 
                             let targetPos = triangleContainer.mapToItem(drag.source.parent, 0, 0);
@@ -97,7 +97,7 @@ Rectangle {
                         } else {
                             draggableList.push(marbleName);
                             console.log("Added draggable:", marbleName, "to drop area:", dropName);
-                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+                            handler.move_string_backend = marbleName + " to " + dropName//////////////////////////////////////////////////////////////////
 
                         }
                     } else {
@@ -109,7 +109,7 @@ Rectangle {
                         } else {
                             draggableList.push(marbleName);
                             console.log("Added draggable:", marbleName, "to drop area:", dropName);
-                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+                            handler.move_string_backend = marbleName + " to " + dropName//////////////////////////////////////////////////////////////////
 
                         }
                     }
@@ -135,7 +135,7 @@ Rectangle {
                             }
                             draggableList.push(marbleName); // Add the Light marble
                             current_color = "Light"; // Update the current color
-                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+                            handler.move_string_backend = marbleName + " to " + dropName//////////////////////////////////////////////////////////////////
 
 
                             let targetPos = triangleContainer.mapToItem(drag.source.parent, 0, 0);
@@ -147,7 +147,7 @@ Rectangle {
                         } else {
                             draggableList.push(marbleName);
                             console.log("Added draggable:", marbleName, "to drop area:", dropName);
-                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+                            handler.move_string_backend = marbleName + " to " + dropName//////////////////////////////////////////////////////////////////
 
                         }
                     } else {
@@ -159,7 +159,7 @@ Rectangle {
                         } else {
                             draggableList.push(marbleName);
                             console.log("Added draggable:", marbleName, "to drop area:", dropName);
-                            handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+                            handler.move_string_backend = marbleName + " to " + dropName//////////////////////////////////////////////////////////////////
 
                         }
                     }
@@ -172,7 +172,7 @@ Rectangle {
                 }
                 draggableList.push(marbleName);
                 console.log("Added draggable:", marbleName, "to drop area:", dropName);
-                handler.move_string_backend = marbleName + " moved to " + dropName//////////////////////////////////////////////////////////////////
+                handler.move_string_backend = marbleName + " to " + dropName//////////////////////////////////////////////////////////////////
 
             }
 

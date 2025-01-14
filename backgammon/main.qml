@@ -31,7 +31,6 @@ ApplicationWindow {
         }
     }
 
-
     Pyside_handler_class {
         id: pyside_backend
         onUpdateSignal: {
@@ -137,8 +136,6 @@ ApplicationWindow {
 
         console.log("Moved marble:", marbleName, "to opponent_hit tray at position:", hitMarble.x, hitMarble.y);
     }
-
-
 
     function simulateDrop(draggable, dropArea) {
         console.log("///////////////////SIMULATE DROP/////////////////////////");
@@ -251,25 +248,6 @@ ApplicationWindow {
         console.log("Updated drop area stack:", dropArea.draggableList);
     }
 
-    // function positionMarbleInDropArea(draggable, dropArea) {
-    //     let stackIndex = dropArea.draggableList.length - 1;
-    //     draggable.x = dropArea.x + (dropArea.width - draggable.width) / 2;
-    //     draggable.y = dropArea.y + dropArea.height - draggable.height * (stackIndex + 1);
-    // }
-    // function positionMarbleInDropArea(draggable, dropArea) {/////////////////////////////
-    //     // Map drop area position to the draggable's parent
-    //     let targetPos = dropArea.mapToItem(draggable.parent, 0, 0);
-
-    //     // Determine the stack position index
-    //     let stackIndex = dropArea.draggableList.length - 1;
-
-    //     // Calculate the new x and y positions
-    //     draggable.x = targetPos.x + (dropArea.width - draggable.width) / 2; // Center horizontally
-    //     draggable.y = targetPos.y + dropArea.height - draggable.height * (stackIndex + 1); // Stack vertically
-
-    //     console.log(`Positioned ${draggable.Drag.keys[0]} at (${draggable.x}, ${draggable.y})`);
-    // }
-
     function positionMarbleInDropArea(draggable, dropArea, isUpsideDown = false) {
         // Map drop area position to the draggable's parent
         let targetPos = dropArea.mapToItem(draggable.parent, 0, 0);
@@ -352,6 +330,7 @@ ApplicationWindow {
             "B4": instance1.dropArea_A4, "B5": instance1.dropArea_A5, "B6": instance1.dropArea_A6,
             "A13": instance1.dropArea_B1, "A14": instance1.dropArea_B2, "A15": instance1.dropArea_B3,
             "A16": instance1.dropArea_B4, "A17": instance1.dropArea_B5, "A18": instance1.dropArea_B6,
+            "C1": opponent_hit,
 
             // Second Board (instance2)
             "B7": instance2.dropArea_A1, "B8": instance2.dropArea_A2, "B9": instance2.dropArea_A3,
@@ -487,8 +466,6 @@ ApplicationWindow {
     }
 
 
-
-
     // Outer border
     Rectangle {
         id: borderContainer
@@ -586,61 +563,6 @@ ApplicationWindow {
                 Layout.fillHeight: true
             }
 
-            
-            // Rectangle {
-
-
-            //     id: game_status
-            //     width: 50 // Fixed width for the right drop area
-            //     Layout.fillHeight: true
-            //     color: "brown" // Dark brown color for the right drop area
-            //     border.width: 2
-
-            //     columnLayout {
-
-            //     }
-
-            // }
-
-            // Rectangle {
-            //     id: game_status
-            //     width: 50 // Fixed width for the right drop area
-            //     Layout.fillHeight: true
-            //     color: "brown" // Dark brown color for the right drop area
-            //     border.width: 2
-            //     ColumnLayout {
-            //         id: columnLayout
-            //         width: parent.width
-            //         height: parent.height
-            //         Rectangle {
-            //             width: parent.width 
-            //             height: parent.height / 3
-            //             color: "blue"
-            //             Text {
-            //                 id: dice1
-            //                 text: "dice is "
-            //                 anchors.centerIn: parent
-            //             }
-            //         }
-
-            //         Rectangle {
-            //             width: parent.width 
-            //             height: parent.height / 3
-            //             color: "yellow"
-            //             Text {
-            //                 id: dice2
-            //                 text: "dice is "
-            //                 anchors.centerIn: parent
-            //             }
-            //         }
-
-            //         Button {
-            //             height: parent.height / 3
-            //             width: parent.width
-            //             text: "surrender"
-            //         }
-            //     }
-            // }
             Rectangle {
                 id: game_status
                 width: 50 // Fixed width for the right drop area

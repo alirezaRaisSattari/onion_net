@@ -29,6 +29,8 @@
 //     border.color: marbleHovered ? "gold" : "black" // Change border color on hover
 // }
 import QtQuick 2.15
+import Pyside_handler 1.0
+
 
 Rectangle {
     id: rightDropArea
@@ -38,8 +40,12 @@ Rectangle {
 
     // Add properties for drag/drop functionality
     property bool marbleHovered: false  // Tracks hover state
-    property string dropName: "right"
+    property string dropName: ""
     property var draggableList: []      // List to track dropped items
+
+    Pyside_handler_class {
+        id: handler
+    }
 
     DropArea {
         anchors.fill: parent
