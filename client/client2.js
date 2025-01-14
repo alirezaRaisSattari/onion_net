@@ -43,9 +43,7 @@ setTimeout(() => {
         ws(
           "message_from_node",
           JSON.stringify({
-            data: data + " dice" + res + res == 3 ? res - 1 : res + 1,
-            dice1: res,
-            dice2: res == 3 ? res - 1 : res + 1,
+            data: `${data} dice${res}${res == 3 ? res - 1 : res + 1}`,
           })
         );
       },

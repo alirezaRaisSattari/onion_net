@@ -50,10 +50,16 @@ setTimeout(() => {
         callServer("/roll-dice", { x: 1 });
         const res = Math.floor(Math.random() * 2) + 1;
         console.log("xxxxyyyyyyy", data);
+        console.log(
+          "xxxxyyyyyyy",
+          JSON.stringify({
+            data: `${data} dice ${res}${res == 3 ? res - 1 : res + 1}`,
+          })
+        );
         socket.emit(
           "message_from_node",
           JSON.stringify({
-            data: data + " dice" + res + res == 3 ? res - 1 : res + 1,
+            data: `${data} dice${res}${res == 3 ? res - 1 : res + 1}`,
             // dice1: res,
             // dice2: res == 3 ? res - 1 : res + 1,
           })
