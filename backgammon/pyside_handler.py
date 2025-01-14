@@ -10,9 +10,11 @@ class Pyside_Game_Handler(QObject):
         self.counter_req = 0
         self.my_moves = []
         
-        self.flask_server = SocketIOServer(host='127.0.0.1', port=5000, secret_key='supersecret', debug=True)
+        self.flask_server = SocketIOServer(host='127.0.0.1', port=5000, secret_key='supersecret', debug=False)
+        # self.flask_server.start()
         self.server_thread = threading.Thread(target=self.flask_server.start, daemon=True)
         self.server_thread.start()
+
     
     def get_move_string(self):
         print("[PYSIDE] get_move_string func triggered")
@@ -31,7 +33,7 @@ class Pyside_Game_Handler(QObject):
             print("TIME TO SEND THAT TO THE OTHER CLIENT TO SEE MY MOVES!")
             print(f"Message to send: {msg}")
             self.my_moves.clear()  # Clear the move list after use
-            self.flask_server.receive_data_from_pyside(msg)
+            # self.flask_server.receive_data_from_pyside(msg)
             self.set_request("")
             
 
