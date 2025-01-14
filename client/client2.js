@@ -57,7 +57,7 @@ setTimeout(() => {
     socket.on("connect", () => {
       console.log("Connected to Flask-SocketIO server!");
       // Optionally send an initial message
-      socket.emit("message_from_node", { data: "Node is connected!" });
+      // socket.emit("message_from_node", { data: "Node is connected!" });
     });
 
     // Listen for messages from Python
