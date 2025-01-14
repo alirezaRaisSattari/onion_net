@@ -10,7 +10,7 @@ class Pyside_Game_Handler(QObject):
         self.counter_req = 0
         self.my_moves = []
         
-        self.flask_server = SocketIOServer(host='127.0.0.1', port=5000, secret_key='supersecret', debug=True)
+        self.flask_server = SocketIOServer(host='127.0.0.1', port=5001, secret_key='supersecret', debug=True)
         self.server_thread = threading.Thread(target=self.flask_server.start, daemon=True)
         self.server_thread.start()
     
