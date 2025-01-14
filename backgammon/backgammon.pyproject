@@ -1,0 +1,15 @@
+{
+    "files": [
+        "Darggable_Marble_Light.qml",
+        "Darggable_Marble_Dark.qml",
+        "DropArea_Down_Dark.qml"
+        "DropArea_Down_Light.qml"
+        "DropArea_Up_Dark.qml"
+        "DropArea_Up_Light.qml"
+        "MainPage.qml"
+        "Side_Tray.qml"
+        "main.py",
+        "dropModule.qml",
+        "main.qml"
+    ]
+}
