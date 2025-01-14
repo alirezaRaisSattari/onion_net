@@ -47,9 +47,9 @@ class SocketIOServer:
                 # Wait until data is received from PySide
                 print("[FLASK] username condition is triggerd!")
                 if not self.data_received_event.is_set():
-                    emit('message_from_python', {
-                        'data': "Waiting for data from PySide..."
-                    })
+                    # emit('message_from_python', {
+                    #     'data': "Waiting for data from PySide..."
+                    # })
                     print("Waiting for data from PySide...")
                     self.data_received_event.wait()
                     
@@ -57,9 +57,9 @@ class SocketIOServer:
                         'data': f"Python received: {json_data['data']} and PySide provided: {self.received_data}"
                         })
                 
-            emit('message_from_python', {
-                    'data': f"Python received: this is the client1 that got the message"
-                    })
+            # emit('message_from_python', {
+            #         'data': f"Python received: this is the client1 that got the message"
+            #         })
             
             # elif json_data['data'] == "userlist":
             #     print("[FLASK] userlist condition is triggerd!")
