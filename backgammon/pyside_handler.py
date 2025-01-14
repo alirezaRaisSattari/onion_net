@@ -17,7 +17,7 @@ class Pyside_Game_Handler(QObject):
             self.move_string_changed.emit()  # Emit the signal when the value changes
     
     def none_get(self):
-        self.opponent_move_request = "this is what I got" 
+        self.opponent_move_request = "moved Marble_Dark_2 to B3 and Marble_Light_3 to B7 dice34" 
     
     def get_request(self):
         print("[PYSIDE] get_move_string func triggered")
