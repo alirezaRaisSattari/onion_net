@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_socketio import SocketIO, emit
 import threading
+import json  # Add this import for JSON parsing
 
 class SocketIOServer:
     def __init__(self, host='127.0.0.1', port=5001, secret_key='secret!', debug=True):
@@ -34,47 +35,108 @@ class SocketIOServer:
         """
         Register SocketIO event handlers.
         """
-        @self.socketio.on('connect')
-        def handle_connect():
-            print('Client connected (Node or Browser)')
-            emit('message_from_python', {'data': 'Hello from Flask!'})
+        # @self.socketio.on('connect')
+        # def handle_connect():
+        #     print('Client connected (Node or Browser)')
+        #     emit('message_from_python', {'data': 'Hello from Flask!'})
+
+        # @self.socketio.on('message_from_node')
+        # def handle_message_from_node(json_data):
+        #     print('Received from Node:', json_data)
+            
+        #     if json_data['data'] == "username":
+        #         # Wait until data is received from PySide
+        #         print("[FLASK] username condition is triggerd!")
+        #         if not self.data_received_event.is_set():
+        #             # emit('message_from_python', {
+        #             #     'data': "Waiting for data from PySide..."
+        #             # })
+        #             print("Waiting for data from PySide...")
+        #             self.data_received_event.wait()
+                    
+        #         emit('message_from_python', {
+        #                 'data': f"Python received: {json_data['data']} and PySide provided: {self.received_data}"
+        #                 })
+                
+        
+        # @self.socketio.on('message_from_node')
+        # def handle_message_from_node(json_data):
+        #     print('Received from Node:', json_data)
+            
+        #     try:
+        #         # Parse the JSON string into a dictionary
+        #         json_data = json.loads(json_data)
+                
+        #         if json_data['data'] == "username":
+        #             print("[FLASK] username condition is triggered!")
+        #             if not self.data_received_event.is_set():
+        #                 print("Waiting for data from PySide...")
+        #                 self.data_received_event.wait()
+                        
+        #             emit('message_from_python', {
+        #                 'data': f"Python received: {json_data['data']} and PySide provided: {self.received_data}"
+        #             })
+        #     except json.JSONDecodeError:
+        #         print("Error: Received data is not valid JSON")
+        #     except KeyError:
+        #         print("Error: 'data' key not found in the JSON")
+                
+        import json  # Ensure this is imported at the top of your script
+
+        # @self.socketio.on('message_from_node')
+        # def handle_message_from_node(json_data):
+        #     print('Received from Node:', json_data)
+            
+        #     try:
+        #         # Parse the JSON string into a dictionary
+        #         if isinstance(json_data, str):
+        #             json_data = json.loads(json_data)
+                
+        #         # Now handle the dictionary
+        #         if json_data['data'] == "username":
+        #             print("[FLASK] username condition is triggered!")
+        #             if not self.data_received_event.is_set():
+        #                 print("Waiting for data from PySide...")
+        #                 self.data_received_event.wait()
+                        
+        #             emit('message_from_python', {
+        #                 'data': f"Python received: {json_data['data']} and PySide provided: {self.received_data}"
+        #             })
+        #     except json.JSONDecodeError as e:
+        #         print(f"JSONDecodeError: {e}")
+        #     except KeyError:
+        #         print("Error: 'data' key not found in the JSON")
 
         @self.socketio.on('message_from_node')
         def handle_message_from_node(json_data):
             print('Received from Node:', json_data)
             
-            if json_data['data'] == "username":
-                # Wait until data is received from PySide
-                print("[FLASK] username condition is triggerd!")
-                if not self.data_received_event.is_set():
-                    # emit('message_from_python', {
-                    #     'data': "Waiting for data from PySide..."
-                    # })
-                    print("Waiting for data from PySide...")
-                    self.data_received_event.wait()
-                    
-                emit('message_from_python', {
-                        'data': f"Python received: {json_data['data']} and PySide provided: {self.received_data}"
-                        })
+            # try:
+            #     # Parse the JSON string into a dictionary
+            #     if isinstance(json_data, str):
+            #         json_data = json.loads(json_data)
                 
-            # emit('message_from_python', {
-            #         'data': f"Python received: this is the client2 that got the message"
-            #         })
-            
-            # elif json_data['data'] == "userlist":
-            #     print("[FLASK] userlist condition is triggerd!")
-            #     if not self.data_received_event.is_set():
-            #         emit('message_from_python', {
-            #             'data': "Waiting for data from PySide..."
-            #         })
-            #         print("Waiting for data from PySide...")
-            #         self.data_received_event.wait()
+            #     # Now handle the dictionary
+            #     if json_data['data'] == "username":
+            #         # print("[FLASK] username condition is triggered!")
+            #         # if not self.data_received_event.is_set():
+            #         #     print("Waiting for data from PySide...")
+            #         #     self.data_received_event.wait()
+                        
+            #         # emit('message_from_python', {
+            #         #     'data': f"Python received: {json_data['data']} and PySide provided: {self.received_data}"
+            #         # })
+            #         emit('message_from_python', {'data': 'Hello from Flask!'})
+            # except json.JSONDecodeError as e:
+            #     print(f"JSONDecodeError: {e}")
+            # except KeyError:
+            #     print("Error: 'data' key not found in the JSON")
+                
+                
+            emit('message_from_python', {'data': 'THIS IS THE CLIENT 2 RESPONSE!!!!'})
+
+            print("I tired myself")
                     
-                # emit('message_from_python', {
-                #         'data': f"Python received: {json_data['data']} and PySide provided: {self.received_data}"
-                #         })
-                # # Respond to the Node client
-            
 
 
     def start(self):
