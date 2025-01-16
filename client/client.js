@@ -4,10 +4,10 @@ const OnionSDK = require("../services/onion-connection-service");
 const WebSocket = require("ws");
 const { connectToHost, createHost } = require("./webSocket");
 const app = express();
-const guiServer = "5000";
 const io = require("socket.io-client");
 const readline = require("readline");
 const { stdin, stdout } = require("process");
+const fileWatcher = require("./fileWatcher");
 const PORT = process.env.PORT || 6000;
 const routerPort = 3000;
 // const { spawn } = require("child_process");
@@ -16,14 +16,14 @@ const routerPort = 3000;
 const onionService = new OnionSDK();
 
 async function callServer(path, body, method) {
-  // const x = await onionService.sendRequest(
-  //   PORT,
-  //   routerPort,
-  //   path,
-  //   JSON.stringify(body),
-  //   method
-  // );
-  // console.log(x);
+  const x = await onionService.sendRequest(
+    PORT,
+    routerPort,
+    path,
+    JSON.stringify(body),
+    method
+  );
+  return JSON.parse(x);
 }
 const server = http.createServer(app);
 const createWSHost = async (eventHandlers) => {
@@ -33,73 +33,44 @@ const createWSHost = async (eventHandlers) => {
   return eventSender;
 };
 
-// callServer("/roll-dice", { x: 1 });
-// setTimeout(() => {
-// callServer("/host", { x: 1 });
-// }, 1000);
+async function rollDice() {
+  const res = await callServer("/roll-dice", { x: 1 });
+  console.log(res);
+  console.log(res.diceNumber);
+  return `${res.diceNumber}${
+    res.diceNumber == 3 ? res.diceNumber - 1 : res.diceNumber + 1
+  }`;
+}
 
-// connectToHost(5001);
-setTimeout(() => {
-  // Start the HTTP and WebSocket server
-  server.listen(PORT, async () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    const socket = io("http://127.0.0.1:" + guiServer);
-    const eventSender = await createWSHost({
-      server: (data) => {
-        console.log("calling pyyyyyyy");
-        callServer("/roll-dice", { x: 1 });
-        const res = Math.floor(Math.random() * 2) + 1;
-        console.log("xxxxyyyyyyy", data);
-        console.log(
-          "xxxxyyyyyyy",
-          JSON.stringify({
-            data: `${data} dice ${res}${res == 3 ? res - 1 : res + 1}`,
-          })
-        );
-        socket.emit(
-          "message_from_node",
-          JSON.stringify({
-            data: `${data} dice${res}${res == 3 ? res - 1 : res + 1}`,
-            // dice1: res,
-            // dice2: res == 3 ? res - 1 : res + 1,
-          })
-        );
-      },
-      server_chat: (data) => {
-        console.log("massage from other client: ", data);
-      },
-    });
-    const rl = readline.createInterface({ input: stdin, output: stdout });
-    console.log("You can chat here:");
-    rl.on("line", (input) => {
-      eventSender.send(JSON.stringify({ event: "client_chat", data: input }));
-    });
-    // socket.emit("message_from_node", { data: "username" });
-    // Handle successful connection
-    socket.on("connect", () => {
-      console.log("Connected to Flask-SocketIO server!");
-      // Optionally send an initial message
-      // socket.emit("message_from_node", { data: "Node is connected!" });
-    });
-
-    // Listen for messages from Python
-    socket.on("message_from_python", (message) => {
-      console.log("Message from Python:", message.data);
-      console.log("calling client2: ", message.data);
-      eventSender.send(JSON.stringify({ event: "client", data: message }));
-    });
-
-    // Handle disconnection
-    socket.on("disconnect", () => {
-      console.log("Disconnected from Flask server");
-    });
-
-    socket.on("error", (error) => {
-      console.error("Socket error:", error);
-    });
-
-    // setInterval(() => {
-    //   eventSender.send(JSON.stringify({ msg: "Welcome to 22222" }));
-    // }, 5000);
+// Start the HTTP and WebSocket server
+server.listen(PORT, async () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+  const eventSender = await createWSHost({
+    server: (data) => {
+      console.log("calling pyyyyyyy");
+      callServer("/roll-dice", { x: 1 });
+      const res = Math.floor(Math.random() * 2) + 1;
+      console.log(
+        "xxxxyyyyyyy",
+        JSON.stringify({
+          data: `${data} dice ${res}${res == 3 ? res - 1 : res + 1}`,
+        })
+      );
+    },
+    server_chat: (data) => {
+      console.log("massage from other client: ", data);
+    },
   });
-}, 3000);
+  fileWatcher(
+    "../writeSharedMemory1",
+    "../readSharedMemory2",
+    rollDice,
+    eventSender
+  );
+
+  const rl = readline.createInterface({ input: stdin, output: stdout });
+  console.log("You can chat here:");
+  rl.on("line", (input) => {
+    eventSender.send(JSON.stringify({ event: "client_chat", data: input }));
+  });
+});
